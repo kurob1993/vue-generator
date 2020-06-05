@@ -12,8 +12,14 @@ class GeneratorController extends Controller
 {
     public function index()
     {
-        $table = 'pasien';
-        // $nameOfTable = Schema::getColumnListing($table);
+        $tables = DB::select('SHOW TABLES');
+        return view('home',compact('tables'));
+    }
+
+    public function generate(Request $request)
+    {
+        $table = $request->table;
+        $title = $request->title;
         $nameOfTable = $columns = DB::select( DB::raw("select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME='".$table."' "));
         $columns = collect($nameOfTable);
         $columns->transform(function ($item, $key) use ($table) {
@@ -23,10 +29,9 @@ class GeneratorController extends Controller
                 'required' => $this->isNullable($item->IS_NULLABLE)
            ];
         });
-        // dd($columns);
         Storage::put(
             'public/generator/'.$table.'/create.vue', 
-            view('vue',compact('columns','table'))->render()
+            view('vue',compact('columns','table','title'))->render()
         );
     }
 

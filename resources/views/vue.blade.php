@@ -2,8 +2,9 @@
   <vs-row vs-justify="center">
     <vs-col type="flex" vs-justify="center" vs-align="center" vs-lg="12" vs-xs="12">
       <vs-card>
-        <h4 class="card-title d-flex">INPUT MASTER {{Str::upper($table)}}</h4>
+        <h4 class="card-title d-flex">{{Str::upper($title)}} {{Str::upper($table)}}</h4>
         <vs-divider />
+
         @foreach ($columns as $item)
         @component('components.vs-input')
         @slot('type') {{$item['type']}} @endslot
@@ -18,6 +19,7 @@
         <vs-button color="primary" type="filled" @click="save()">
           Save
         </vs-button>
+
       </vs-card>
     </vs-col>
   </vs-row>
@@ -55,7 +57,6 @@
       }
 
       console.log(this.errors);
-      
 
     }
   }
