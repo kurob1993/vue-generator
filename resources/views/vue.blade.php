@@ -2,17 +2,11 @@
   <vs-row vs-justify="center">
     <vs-col type="flex" vs-justify="center" vs-align="center" vs-lg="12" vs-xs="12">
       <vs-card>
-        <h4 class="card-title d-flex">{{Str::upper($title)}} {{Str::upper($table)}}</h4>
+        <h4 class="card-title d-flex">{{ isset($title) ? Str::upper($title) : Str::upper($table)}}</h4>
         <vs-divider />
 
         @foreach ($columns as $item)
-        @component('components.vs-input')
-        @slot('type') {{$item['type']}} @endslot
-        @slot('title') {{Str::upper($item['column'])}} @endslot
-        @slot('label') {{Str::upper($item['column'])}} @endslot
-        @slot('vmodel') {{$item['column']}} @endslot
-        @slot('required') {{$item['required']}} @endslot
-        @endcomponent
+          @include('components.index', $item)
         @endforeach
 
         <vs-divider />
@@ -55,9 +49,7 @@
       if (!this.errors.length) {
         return true;
       }
-
-      console.log(this.errors);
-
+      
     }
   }
  };

@@ -18,6 +18,7 @@
 Auth::routes();
 
 Route::get('/', 'GeneratorController@index')->name('generator.index');
+Route::get('/files', 'GeneratorController@files')->name('generator.files');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/generate', 'GeneratorController@generate')->name('generate');
 Route::get('/columnsTable', 'GeneratorController@getTableColumns')->name('columnsTable');

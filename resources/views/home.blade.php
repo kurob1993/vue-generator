@@ -27,7 +27,7 @@
                         </select>
 
                         <label for="title">Titile Halaman</label>
-                        <input type="text" name="title" id="title" class="form-control my-2" required placeholder="Data Master">
+                        <input type="text" name="title" id="title" class="form-control my-2" placeholder="Data Master Karyawan">
 
                         <button type="submit" class="btn btn-primary my-2">Generate</button>
                     </form>
