@@ -1,146 +1,63 @@
 <template>
-   <div>
-      <!-- begin breadcrumb -->
-      <ol class="breadcrumb float-xl-right">
-         <li class="breadcrumb-item">
-            <a href="javascript:;">Data Master</a>
-         </li>
-         <li class="breadcrumb-item active">Mater Pegawai</li>
-      </ol>
-      <!-- end breadcrumb -->
-      <!-- begin page-header -->
-      <h1 class="page-header">Data Master</h1>
-      <!-- end page-header -->
-      <!-- begin row -->
-      <div class="row">
-         <!-- begin col-12 -->
-         <div class="col-xl-12">
-            <!-- begin panel -->
-            <panel title="Input Data Master Pegawai" bodyClass="panel-form">
-               <div>
-                  <vue-good-table
-                     ref="table"
-                     :columns="columns"
-                     :rows="rows"
-                     :line-numbers="true"
-                     :selectOptions="{
-                        enabled: true,
-                        selectOnCheckboxOnly: true, // only select when checkbox is clicked instead of the row
-                        selectionInfoClass: 'custom-class',
-                        selectionText: 'rows selected',
-                        clearSelectionText: 'clear',
-                        disableSelectInfo: true, // disable the select info panel on top
-                     }"
-                     :search-options="{
-                        enabled: true
-                     }"
-                  >
-                     <div slot="table-actions">
-                        <router-link
-                           to="/data-master/pegawai/create"
-                           class="btn btn-primary btn-sm text-white m-1"
-                        >Tambah</router-link>
-                        <button
-                           type="button"
-                           class="btn btn-success btn-sm text-white m-1"
-                           @click="edit"
-                        >Edit</button>
-                        <button
-                           type="button"
-                           class="btn btn-danger btn-sm m-1"
-                           @click="hapusAlert"
-                        >Hapus</button>
-                     </div>
-                  </vue-good-table>
-               </div>
-            </panel>
-            <!-- end panel -->
-         </div>
-         <!-- end col-12 -->
-      </div>
-      <!-- end row -->
-   </div>
+  <vs-row vs-justify="center">
+    <vs-col type="flex" vs-justify="center" vs-align="center" vs-lg="12" vs-xs="12">
+      <vs-card>
+        <h4 class="card-title d-flex">INPUT MASTER {{Str::upper($table)}}</h4>
+        <vs-divider />
+        @foreach ($columns as $item)
+        @component('components.vs-input')
+        @slot('type') {{$item['type']}} @endslot
+        @slot('title') {{Str::upper($item['column'])}} @endslot
+        @slot('label') {{Str::upper($item['column'])}} @endslot
+        @slot('vmodel') {{$item['column']}} @endslot
+        @slot('required') {{$item['required']}} @endslot
+        @endcomponent
+        @endforeach
+
+        <vs-divider />
+        <vs-button color="primary" type="filled" @click="save()">
+          Save
+        </vs-button>
+      </vs-card>
+    </vs-col>
+  </vs-row>
 </template>
 
 <script>
-export default {
-   data() {
-      let peg = JSON.parse(localStorage.getItem("pegawai"));
-      return {
-         columns: [
-            {
-               label: "NIK",
-               field: "nik"
-            },
-            {
-               label: "Nama",
-               field: "nama"
-            },
-            {
-               label: "TMP Lahir",
-               field: "tmplahir"
-            },
-            {
-               label: "TGL Lahir",
-               field: "tgllahir"
-            }
-         ],
-         rows: peg == null ? [] : peg
-      };
-   },
-   methods: {
-      hapusAlert() {
-         let data = this.$refs["table"].selectedRows;
-         if (data.length) {
-            // Use sweetalert2
-            const options = {
-               title: "Yakin",
-               text: "akan hapus data ini?",
-               icon: "warning",
-               confirmButtonColor: "#dee3e2",
-               cancelButtonColor: "#00a8cc",
-               confirmButtonText: "YA",
-               showCancelButton: true,
-               cancelButtonText: "TIDAK"
-            };
-            this.$swal(options).then(result => {
-               if (result.value) {
-                  let data = this.$refs["table"].selectedRows;
-                  data.forEach(element => {
-                     this.hapus("pegawai", element.nik);
-                  });
-                  this.$swal("Data berhasil dihapus");
-               }
-            });
-         }else{
-            this.$swal("Pilih satu data");
-         }
-      },
-      hapus(key, needle) {
-         let obj = JSON.parse(localStorage.getItem(key));
-         obj = obj == null ? [] : obj;
+  export default {
+   name: "{{$table}}",
+   data: () => ({
+    errors: [],
+    @foreach ($columns as $item)
+      {{$item['column']}}: "",
+    @endforeach
 
-         let peg = [];
-         for (var i = 0; i < obj.length; i++) {
-            if (obj[i].nik !== needle) {
-               peg.push(obj[i]);
-            }
-         }
-         localStorage.setItem("pegawai", JSON.stringify(peg));
-         this.rows = JSON.parse(localStorage.getItem("pegawai"));
-      },
-      edit() {
-         let data = this.$refs["table"].selectedRows;
-         if (data.length == 1) {
-            let nik = '';
-            data.forEach(element => {
-               nik = element.nik;
-            });
-            this.$router.push({ name: "pegawai.edit", params: { id: nik } });
-         } else {
-            this.$swal("Pilih satu data");
-         }
+   }),
+  methods: {
+    save : function() {
+      alert( 'test' )
+      this.checkForm();
+    },
+    checkForm: function () {
+      this.errors = [];
+      @foreach ($columns as $item)
+        @if($item['required'])
+
+          if (!this.{{$item['column']}}) {
+            this.errors.push("{{$item['column']}} required.");
+          }
+
+        @endif
+      @endforeach
+
+      if (!this.errors.length) {
+        return true;
       }
-   }
-};
+
+      console.log(this.errors);
+      
+
+    }
+  }
+ };
 </script>
