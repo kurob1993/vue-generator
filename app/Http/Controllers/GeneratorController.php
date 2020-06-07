@@ -55,7 +55,7 @@ class GeneratorController extends Controller
                 'required' => $this->isNullable($item->IS_NULLABLE)
             ];
         });
-        
+        // dd($columns);
         Storage::put(
             'public/generator/' . $table . '/' . $table . 'Create.vue',
             view('vue', compact('columns', 'table', 'title'))->render()

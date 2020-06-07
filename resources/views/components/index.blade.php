@@ -1,6 +1,6 @@
 @switch($type)
    @case('text')
-      @component('components.text',[
+      @text([
          'type' => $type,
          'title' => Str::upper($column),
          'label' => Str::upper($column),
@@ -8,26 +8,28 @@
          'placeholder' => '',
          'required' => $required
       ])
-      @endcomponent
+      @endtext
    @break
    @case('number')
-      @component('components.number',[
+      @textNumber([
          'type' => $type,
          'title' => Str::upper($column),
          'label' => Str::upper($column),
          'vmodel' => $column,
          'required' => $required
       ])
-      @endcomponent
+      @endtextNumber
       @break
 
    @default
-   @component('components.text',[
+      @text([
          'type' => $type,
          'title' => Str::upper($column),
          'label' => Str::upper($column),
          'vmodel' => $column,
+         'placeholder' => '',
          'required' => $required
       ])
-      @endcomponent
+      @endtext
+      
 @endswitch

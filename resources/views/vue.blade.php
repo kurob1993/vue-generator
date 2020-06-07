@@ -6,7 +6,9 @@
         <vs-divider />
 
         @foreach ($columns as $item)
-          @include('components.index', $item)
+          <div class="default-input">
+            @include('components.index', $item)
+          </div>
         @endforeach
 
         <vs-divider />
