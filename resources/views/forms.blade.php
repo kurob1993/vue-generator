@@ -30,7 +30,7 @@
                            <td>Endpont Api</td>
                            <td>:</td>
                            <td>
-                              <input type="text" name="titleHeader" class="form-control" value="{{ $endpoint }}" readonly>
+                              <input type="text" name="endpoint" class="form-control" value="{{ $endpoint }}" readonly>
                            </td>
                         </tr>
                      </table>
@@ -62,6 +62,7 @@
                                  <select class="form-control" name="type[]">
                                     <option value="text" {{ $item['type'] == 'text' ? 'selected' : ''}}>text</option>
                                     <option value="number" {{ $item['type'] == 'number' ? 'selected' : ''}}>number</option>
+                                    <option value="textNumber" {{ $item['type'] == 'textNumber' ? 'selected' : ''}}>textNumber</option>
                                  </select>
                               </td>
                            </tr>

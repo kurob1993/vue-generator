@@ -4,7 +4,7 @@
    </vs-col>
    <vs-col vs-w="8" vs-xs="12">
       <vs-input 
-         type="text" 
+         type="number" 
          class="inputx" 
          v-model="{{$vmodel}}" 
          id="{{$vmodel}}" 

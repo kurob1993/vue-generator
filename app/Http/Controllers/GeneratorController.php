@@ -17,45 +17,6 @@ class GeneratorController extends Controller
         return view('home', compact('tables'));
     }
 
-    public function files()
-    {
-        $files = [];
-        $dir = Storage::allDirectories('public/generator');
-        foreach ($dir as $key => $items) {
-            foreach (Storage::files($items) as $key => $item) {
-                array_push($files, $item);
-            }
-        }
-        $data = collect($files);
-        $data->transform(function ($item, $key) {
-            return str_replace("public", "storage", $item);
-        });
-        return view('files', compact('data'));
-    }
-
-    public function generate(Request $request)
-    {
-        
-        $columns = collect($request->column);
-        $columns->transform(function ($item, $key) use($request) {
-            return [
-                'column' => $item,
-                'type' => $request->type[$key],
-                'required' => $request->required[$key],
-                'title' => $request->title[$key]
-            ];
-        });
-
-        $table = $request->table;
-        $title = $request->titleHeader;
-        Storage::put(
-            'public/generator/' . $table . '/' . $table . 'Create.vue',
-            view('vue', compact('columns', 'table', 'title'))->render()
-        );
-
-        return redirect()->route('generator.files');
-    }
-
     public function getTableColumns(Request $request)
     {
         $databaseName = Config::get('database.connections.' . Config::get('database.default'));
@@ -79,7 +40,47 @@ class GeneratorController extends Controller
                 'required' => $this->isNullable($item->IS_NULLABLE)
             ];
         });
-        return view('forms', compact('columns','table','title','endpoint'));
+        return view('forms', compact('columns', 'table', 'title', 'endpoint'));
+    }
+
+    public function generate(Request $request)
+    {
+
+        $columns = collect($request->column);
+        $columns->transform(function ($item, $key) use ($request) {
+            return [
+                'column' => $item,
+                'type' => $request->type[$key],
+                'required' => $request->required[$key],
+                'title' => $request->title[$key]
+            ];
+        });
+
+        $table = $request->table;
+        $title = $request->titleHeader;
+        $endpoint = $request->endpoint;
+        Storage::put(
+            'public/generator/' . $table . '/' . $table . '.vue',
+            view('template-vue', compact('columns', 'table', 'title','endpoint'))->render()
+        );
+
+        return redirect()->route('generator.files');
+    }
+
+    public function files()
+    {
+        $files = [];
+        $dir = Storage::allDirectories('public/generator');
+        foreach ($dir as $key => $items) {
+            foreach (Storage::files($items) as $key => $item) {
+                array_push($files, $item);
+            }
+        }
+        $data = collect($files);
+        $data->transform(function ($item, $key) {
+            return str_replace("public", "storage", $item);
+        });
+        return view('files', compact('data'));
     }
 
     public function isNullable($data)
@@ -115,7 +116,7 @@ class GeneratorController extends Controller
             case 'set':
                 return 'text';
                 break;
-            
+
             case 'blob':
             case 'mediumblob':
             case 'longblob':

@@ -36,13 +36,16 @@
          </vs-card>
 
          <vs-popup classContent="popup-example" title="CREATE {{ isset($title) ? Str::upper($title) : Str::upper($table)}}" :active.sync="popupActive">
+            @foreach ($columns as $item)
+              @include('components.index', $item)
+            @endforeach
             <vs-divider />
             <div class="d-flex">
                <vs-button class="ml-auto" color="success" type="filled">Save</vs-button>
                <vs-button class="ml-2" color="danger" type="filled">Cancel</vs-button>
             </div>
          </vs-popup>
-
+         
       </vs-col>
    </vs-row>
 </template>
@@ -67,7 +70,7 @@ export default {
     isLoading: false,
     columns: [
       @foreach ($columns as $item)
-         { label : '{{$item['column']}}', field: '{{$item['column']}}'},
+         { label : '{{$item['title']}}', field: '{{ Str::lower($item['column'])}}'},
       @endforeach
     ],
     rows: [],
@@ -118,7 +121,7 @@ export default {
       this.rows = [];
       this.axios({
         method: 'get',
-        url: 'api/Dokter?pageNum='+(this.serverParams.page-1 )+'&pageSize='+this.serverParams.perPage,
+        url: '{{$endpoint}}?pageNum='+(this.serverParams.page-1 )+'&pageSize='+this.serverParams.perPage,
         timeout: 0,
         headers: {
           "Accept": "application/json",

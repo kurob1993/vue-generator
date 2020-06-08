@@ -25,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Blade::component('components.text', 'text');
-        Blade::component('components.number', 'textNumber');
+        Blade::component('components.textNumber', 'textNumber');
+        Blade::component('components.number', 'number');
+        Blade::component('components.popup', 'popup');
     }
 }
