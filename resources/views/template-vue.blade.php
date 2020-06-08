@@ -8,8 +8,9 @@
                </vs-col>
                <vs-col vs-type="flex" :vs-justify="this.justifyButton" vs-align="center" vs-lg="6" vs-xs="12">
                   <vs-button color="primary" type="filled" icon="add" size="small" class="mx-1"
-                     @click="popupActive=true">CREATE</vs-button>
-                  <vs-button color="warning" type="filled" icon="edit" size="small" class="mx-1">EDIT</vs-button>
+                     @click="popupCreate=true">CREATE</vs-button>
+                  <vs-button color="warning" type="filled" icon="edit" size="small" class="mx-1"
+                    @click="popupEdit=true">EDIT</vs-button>
                   <vs-button color="danger" type="filled" icon="delete" size="small" class="mx-1">DELETE</vs-button>
                </vs-col>
             </vs-row>
@@ -35,17 +36,24 @@
             <vs-divider />
          </vs-card>
 
-         <vs-popup classContent="popup-example" title="CREATE {{ isset($title) ? Str::upper($title) : Str::upper($table)}}" :active.sync="popupActive">
-            @foreach ($columns as $item)
-              @include('components.index', $item)
-            @endforeach
-            <vs-divider />
-            <div class="d-flex">
-               <vs-button class="ml-auto" color="success" type="filled">Save</vs-button>
-               <vs-button class="ml-2" color="danger" type="filled">Cancel</vs-button>
-            </div>
-         </vs-popup>
-         
+        @popup([
+          'title' => isset($title) ? "CREATE ".Str::upper($title) : "CREATE ".Str::upper($table),
+          'popupActive' => 'popupCreate'
+        ])
+          @foreach ($columns as $item)
+            @include('components.index', $item)
+          @endforeach
+        @endpopup
+
+        @popup([
+          'title' => isset($title) ? "EDI T ".Str::upper($title) : "EDIT ".Str::upper($table),
+          'popupActive' => 'popupEdit'
+        ])
+          @foreach ($columns as $item)
+            @include('components.index', $item)
+          @endforeach
+        @endpopup
+
       </vs-col>
    </vs-row>
 </template>
@@ -64,7 +72,8 @@ export default {
    justifyTitle: "flex-start",
    justifyButton: "flex-end",
    window: { width: 0, height: 0 },
-   popupActive: false,
+   popupCreate: false,
+   popupEdit: false,
    errors: [],
     //for table start
     isLoading: false,
