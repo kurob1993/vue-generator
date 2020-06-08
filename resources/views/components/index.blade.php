@@ -1,20 +1,19 @@
 @switch($type)
    @case('text')
       @text([
-         'type' => $type,
          'title' => Str::upper($column),
-         'label' => Str::upper($column),
+         'label' => Str::upper($title),
          'vmodel' => $column,
-         'placeholder' => '',
+         'placeholder' => Str::upper($title),
          'required' => $required
       ])
       @endtext
    @break
+   
    @case('number')
       @textNumber([
-         'type' => $type,
          'title' => Str::upper($column),
-         'label' => Str::upper($column),
+         'label' => Str::upper($title),
          'vmodel' => $column,
          'required' => $required
       ])
@@ -23,9 +22,8 @@
 
    @default
       @text([
-         'type' => $type,
          'title' => Str::upper($column),
-         'label' => Str::upper($column),
+         'label' => Str::upper($title),
          'vmodel' => $column,
          'placeholder' => '',
          'required' => $required

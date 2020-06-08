@@ -35,9 +35,33 @@ class GeneratorController extends Controller
 
     public function generate(Request $request)
     {
+        
+        $columns = collect($request->column);
+        $columns->transform(function ($item, $key) use($request) {
+            return [
+                'column' => $item,
+                'type' => $request->type[$key],
+                'required' => $request->required[$key],
+                'title' => $request->title[$key]
+            ];
+        });
+
+        $table = $request->table;
+        $title = $request->titleHeader;
+        Storage::put(
+            'public/generator/' . $table . '/' . $table . 'Create.vue',
+            view('vue', compact('columns', 'table', 'title'))->render()
+        );
+
+        return redirect()->route('generator.files');
+    }
+
+    public function getTableColumns(Request $request)
+    {
         $databaseName = Config::get('database.connections.' . Config::get('database.default'));
         $table = $request->table;
         $title = $request->title;
+        $endpoint = $request->endpoint;
         $nameOfTable = $columns = DB::select(DB::raw("
             select 
                 * 
@@ -55,41 +79,7 @@ class GeneratorController extends Controller
                 'required' => $this->isNullable($item->IS_NULLABLE)
             ];
         });
-        // dd($columns);
-        Storage::put(
-            'public/generator/' . $table . '/' . $table . 'Create.vue',
-            view('vue', compact('columns', 'table', 'title'))->render()
-        );
-
-        return redirect()->route('generator.files');
-    }
-
-    public function getTableColumns()
-    {
-        // $table = 'dokter';
-        // $nameOfTable = Schema::getColumnListing($table);
-        // $collection = collect($nameOfTable);
-        // $collection->transform(function ($item, $key) use ($table) {
-        //     return [
-        //         'column' => $item,
-        //         'type' => $this->convert( Schema::getColumnType($table, $item))
-        //    ];
-        // });
-        // dd($collection);
-
-        // foreach ($nameOfTable as $key => $value) {
-        //     echo Schema::getColumnType('dokter',$value);
-        // }
-
-        // // // return $nameOfTable;
-        $table = 'dokter';
-        $columns = DB::select(DB::raw("select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME='dokter' "));
-        dd($columns);
-        // foreach($columns as $column) {
-        //     $name = $column->Field;
-        //     $type = $column->Type;
-        // }
-
+        return view('forms', compact('columns','table','title','endpoint'));
     }
 
     public function isNullable($data)

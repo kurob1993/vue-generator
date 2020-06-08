@@ -1,109 +1,180 @@
 <template>
-   <div>
+   <vs-row vs-justify="center">
+      <vs-col type="flex" vs-justify="center" vs-align="center" vs-lg="12" vs-xs="12">
+         <vs-card>
+            <vs-row vs-type="flex" vs-justify="center">
+               <vs-col vs-type="flex" :vs-justify="this.justifyTitle" vs-align="center" vs-lg="6" vs-xs="12">
+                  <h4 class="card-title d-flex">{{ isset($title) ? Str::upper($title) : Str::upper($table)}}</h4>
+               </vs-col>
+               <vs-col vs-type="flex" :vs-justify="this.justifyButton" vs-align="center" vs-lg="6" vs-xs="12">
+                  <vs-button color="primary" type="filled" icon="add" size="small" class="mx-1"
+                     @click="popupActive=true">CREATE</vs-button>
+                  <vs-button color="warning" type="filled" icon="edit" size="small" class="mx-1">EDIT</vs-button>
+                  <vs-button color="danger" type="filled" icon="delete" size="small" class="mx-1">DELETE</vs-button>
+               </vs-col>
+            </vs-row>
 
-      <vs-row>
-         <vs-col type="flex" vs-lg="12" vs-xs="12">
-            <vs-card>
-               <h4 class="card-title d-flex">
-                  Form
-               </h4>
-               <vs-button @click="popupActive=true" color="primary" type="filled">Open Popup</vs-button>
-            </vs-card>
-         </vs-col>
-      </vs-row>
+            <vs-divider />
+            <vue-good-table 
+               mode="remote" 
+               @on-page-change="onPageChange" 
+               @on-sort-change="onSortChange"
+               @on-column-filter="onColumnFilter" 
+               @on-per-page-change="onPerPageChange" 
+               :totalRows="totalRecords"
+               :isLoading.sync="isLoading" 
+               :pagination-options="{
+                  enabled: true,
+               }" 
+               :rows="rows" 
+               :columns="columns" 
+               :sort-options="{
+                  enabled: false,
+               }" 
+            />
+            <vs-divider />
+         </vs-card>
 
-      <vs-popup classContent="popup-example" title="Popup Title" :active.sync="popupActive">
-         <vs-row class="form-group">
-            <vs-col vs-w="4" vs-xs="12">
-               <label class="vs-input--label" for="InputText">Text</label>
-            </vs-col>
-            <vs-col vs-w="8" vs-xs="12">
-               <vs-input type="text" class="inputx" v-model="text" id="InputText" />
-            </vs-col>
-         </vs-row>
-         <vs-row class="form-group">
-            <vs-col vs-w="4" vs-xs="12">
-               <label class="vs-input--label" for="InputDate">Date</label>
-            </vs-col>
-            <vs-col vs-w="8" vs-xs="12">
-               <vs-input type="date" class="inputx" v-model="date" id="InputDate" />
-            </vs-col>
-         </vs-row>
-         <vs-row class="form-group">
-            <vs-col vs-w="4" vs-xs="12">
-               <label class="vs-input--label" for="InputCheckBox">CheckBox</label>
-            </vs-col>
-            <vs-col vs-w="8" vs-xs="12">
-               <vs-checkbox class="justify-content-start" v-model="checkBox" id="InputCheckBox">{{checkBox}}
-               </vs-checkbox>
-            </vs-col>
-         </vs-row>
-         <vs-row class="form-group">
-            <vs-col vs-w="4" vs-xs="12">
-               <label class="vs-input--label" for="InputSelect">Select</label>
-            </vs-col>
-            <vs-col vs-w="8" vs-xs="12">
-               <vs-select autocomplete v-model="select" id="InputSelect">
-                  <vs-select-item :value="item.value" :text="item.text" v-for="item in options" :key="item.text" />
-               </vs-select>
-            </vs-col>
-         </vs-row>
-         <vs-row class="form-group">
-            <vs-col vs-w="4" vs-xs="12">
-               <label class="vs-input--label" for="InputNumber">Number</label>
-            </vs-col>
-            <vs-col vs-w="8" vs-xs="12">
-               <vs-input-number v-model="number" id="InputNumber" min="1" max="10" :step="1" />
-            </vs-col>
-         </vs-row>
-         <vs-row class="form-group">
-            <vs-col vs-w="4" vs-xs="12">
-               <label class="vs-input--label" for="InputStatus">Status</label>
-            </vs-col>
-            <vs-col vs-w="8" vs-xs="12">
-               <vs-switch color="success" v-model="status" id="InputStatus">
-                  <span slot="on">Active</span>
-                  <span slot="off">Not Active</span>
-               </vs-switch>
-            </vs-col>
-         </vs-row>
-         <vs-row class="form-group">
-            <vs-col vs-w="4" vs-xs="12">
-               <label class="vs-input--label" for="InputTextarea">Textarea</label>
-            </vs-col>
-            <vs-col vs-w="8" vs-xs="12">
-               <vs-textarea counter="20" :counter-danger.sync="counterDanger" v-model="textarea" id="InputTextarea" />
-            </vs-col>
-         </vs-row>
-         <vs-divider />
-         <div class="d-flex">
-            <vs-button class="ml-auto" color="success" type="filled">Save</vs-button>
-            <vs-button class="ml-2" color="danger" type="filled">Cancel</vs-button>
-         </div>
-      </vs-popup>
+         <vs-popup classContent="popup-example" title="CREATE {{ isset($title) ? Str::upper($title) : Str::upper($table)}}" :active.sync="popupActive">
+            <vs-divider />
+            <div class="d-flex">
+               <vs-button class="ml-auto" color="success" type="filled">Save</vs-button>
+               <vs-button class="ml-2" color="danger" type="filled">Cancel</vs-button>
+            </div>
+         </vs-popup>
 
-   </div>
+      </vs-col>
+   </vs-row>
 </template>
 
 <script>
-   export default {
-   name: "form_input",
-   data: () => ({
-     text: "",
-     password: "",
-     date: "",
-     checkBox: true,
-     select: "",
-     options: [
-       {key: "KIT", value: "Krakatau IT"}
-     ],
-     number: 5,
-     status: true,
-     textarea: '',
-     counterDanger: false,
-     popupActive: false,
-   }),
- };
+   // const axios = require('axios');
+
+export default {
+  name: "dokter",
+  data: () => ({
+   
+   @foreach ($columns as $item)
+      {{$item['column']}}: "",
+   @endforeach
+
+   justifyTitle: "flex-start",
+   justifyButton: "flex-end",
+   window: { width: 0, height: 0 },
+   popupActive: false,
+   errors: [],
+    //for table start
+    isLoading: false,
+    columns: [
+      @foreach ($columns as $item)
+         { label : '{{$item['column']}}', field: '{{$item['column']}}'},
+      @endforeach
+    ],
+    rows: [],
+    totalRecords: 0,
+    serverParams: {
+      page: 1, 
+      perPage: 10
+    }
+    //for table end
+  }),
+  methods: {
+    // for table --- start ---
+    updateParams(newProps) {
+      this.serverParams = Object.assign({}, this.serverParams, newProps);
+    },
+    
+    onPageChange(params) {
+      this.updateParams({page: params.currentPage});
+      this.loadItems();
+    },
+
+    onPerPageChange(params) {
+      this.updateParams({perPage: params.currentPerPage});
+      this.loadItems();
+    },
+
+    onSortChange(params) {
+      this.updateParams({
+        sort: [{
+          type: params.sortType,
+          field: this.columns[params.columnIndex].field,
+        }],
+      });
+      this.loadItems();
+    },
+    
+    onColumnFilter(params) {
+      this.updateParams(params);
+      this.loadItems();
+    },
+
+    // load items is what brings back the rows from server
+    loadItems() {
+      console.log(this.serverParams);
+      this.getData();     
+    },
+    getData() {
+      this.rows = [];
+      this.axios({
+        method: 'get',
+        url: 'api/Dokter?pageNum='+(this.serverParams.page-1 )+'&pageSize='+this.serverParams.perPage,
+        timeout: 0,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJrdXJvYiIsImlhdCI6MTU5MTYxNTcyOCwiZXhwIjoxNTkxNzAyMTI4fQ.Gqnzei_nMoA6mpsnoBASxRknDxcShNey_ZBCbcHWBP-xfKm9J3XyDwbQtswCrxRYBuMK3Btmg282fMdaxgNBRA"
+        },
+      })
+      .then(response => {
+        this.serverParams.page = response.data.pageable.pageNumber+1;
+        this.serverParams.perPage = response.data.pageable.pageSize;
+        this.totalRecords = response.data.totalElements;
+        response.data.content.forEach(element => {
+          this.rows.push(element);
+        });
+      });
+    },
+    // for table --- end ---
+
+    save() {
+      alert("test");
+      this.checkForm();
+    },
+
+    checkForm: function() {
+      this.errors = [];
+
+      if (!this.nik) {
+        this.errors.push("nik required.");
+      }
+
+      if (!this.errors.length) {
+        return true;
+      }
+    },
+
+    handleResize() {
+      if (window.innerWidth < 601) {
+        this.justifyTitle = "center";
+        this.justifyButton = "center";
+      } else {
+        this.justifyTitle = "flex-start";
+        this.justifyButton = "flex-end";
+      }
+    }
+
+  },
+  mounted() {
+    this.getData();
+  },
+  created() {
+    window.addEventListener("resize", this.handleResize);
+    this.handleResize();
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.handleResize);
+  }
+};
 </script>
 
 <style>
