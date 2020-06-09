@@ -7,7 +7,7 @@
          'required' => $required
       ])
       @endtext
-   @break
+      @break
 
    @case('textarea')
       @textarea([
@@ -16,7 +16,16 @@
          'required' => $required
       ])
       @endtextarea
-   @break
+      @break
+
+   @case('switch')
+      @switchInput([
+         'label' => Str::upper($title),
+         'vmodel' => $column,
+         'required' => $required
+      ])
+      @endswitchInput
+      @break
    
    @case('number')
       @number([
@@ -36,6 +45,15 @@
       @endtextNumber
       @break
 
+   @case('date')
+      @date([
+         'label' => Str::upper($title),
+         'vmodel' => $column,
+         'required' => $required
+      ])
+      @enddate
+      @break
+      
    @default
       @text([
          'label' => Str::upper($title),

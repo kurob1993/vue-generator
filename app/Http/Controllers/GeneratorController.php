@@ -112,9 +112,12 @@ class GeneratorController extends Controller
             case 'binary':
             case 'varbinary':
             case 'tinyblob':
-            case 'enum':
             case 'set':
                 return 'text';
+                break;
+
+            case 'enum':
+                return 'switch';
                 break;
 
             case 'blob':

@@ -26,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Blade::component('components.text', 'text');
         Blade::component('components.textarea', 'textarea');
+        Blade::component('components.switch', 'switchInput');
+        Blade::component('components.date', 'date');
         Blade::component('components.textNumber', 'textNumber');
         Blade::component('components.number', 'number');
         Blade::component('components.popup', 'popup');

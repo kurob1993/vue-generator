@@ -64,6 +64,8 @@
                                     <option value="textarea" {{ $item['type'] == 'textarea' ? 'selected' : ''}}>textarea</option>
                                     <option value="number" {{ $item['type'] == 'number' ? 'selected' : ''}}>number</option>
                                     <option value="textNumber" {{ $item['type'] == 'textNumber' ? 'selected' : ''}}>textNumber</option>
+                                    <option value="switch" {{ $item['type'] == 'switch' ? 'selected' : ''}}>switch</option>
+                                    <option value="date" {{ $item['type'] == 'date' ? 'selected' : ''}}>date</option>
                                  </select>
                               </td>
                            </tr>
