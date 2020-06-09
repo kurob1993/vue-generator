@@ -3,13 +3,15 @@
       <label class="vs-input--label" for="{{$vmodel}}">{{$label}}</label>
    </vs-col>
    <vs-col vs-w="8" vs-xs="12">
-      <vs-input 
-         type="number" 
-         class="inputx" 
-         v-model="{{$vmodel}}" 
-         id="{{$vmodel}}" 
-         placeholder="{{isset($placeholder) ? $placeholder : ''}}" 
-         {{$required}}
+      <ValidationProvider tag="div" rules="required" name="{{$label}}" v-slot="{ errors }">
+         <vs-input 
+            type="number" 
+            class="inputx" 
+            v-model="{{$vmodel}}" 
+            id="{{$vmodel}}" 
+            placeholder="{{isset($placeholder) ? $placeholder : ''}}"
          />
+         <span class="text-danger d-block">@{{ errors[0] }}</span>
+     </ValidationProvider>
    </vs-col>
 </vs-row>
