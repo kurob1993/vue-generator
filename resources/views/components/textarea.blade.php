@@ -3,7 +3,7 @@
         <label class="vs-input--label" for="{{$vmodel}}">{{$label}}</label>
     </vs-col>
     <vs-col vs-w="8" vs-xs="12">
-        <ValidationProvider tag="div" rules="required" name="{{$label}}" v-slot="{ errors }">
+        <ValidationProvider tag="div" rules="{{$required}}" name="{{$label}}" v-slot="{ errors }">
             <vs-textarea v-model="{{$vmodel}}" id="{{$vmodel}}" />
             <span class="text-danger d-block">@{{ errors[0] }}</span>
         </ValidationProvider>
