@@ -61,6 +61,7 @@
                               <td>
                                  <select class="form-control" name="type[]">
                                     <option value="text" {{ $item['type'] == 'text' ? 'selected' : ''}}>text</option>
+                                    <option value="textarea" {{ $item['type'] == 'textarea' ? 'selected' : ''}}>textarea</option>
                                     <option value="number" {{ $item['type'] == 'number' ? 'selected' : ''}}>number</option>
                                     <option value="textNumber" {{ $item['type'] == 'textNumber' ? 'selected' : ''}}>textNumber</option>
                                  </select>

@@ -8,6 +8,15 @@
       ])
       @endtext
    @break
+
+   @case('textarea')
+      @textarea([
+         'label' => Str::upper($title),
+         'vmodel' => $column,
+         'required' => $required
+      ])
+      @endtextarea
+   @break
    
    @case('number')
       @number([
@@ -15,7 +24,7 @@
          'vmodel' => $column,
          'required' => $required
       ])
-      @endtextNumber
+      @endnumber
       @break
 
    @case('textNumber')

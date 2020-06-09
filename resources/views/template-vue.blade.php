@@ -46,7 +46,7 @@
         @endpopup
 
         @popup([
-          'title' => isset($title) ? "EDI T ".Str::upper($title) : "EDIT ".Str::upper($table),
+          'title' => isset($title) ? "EDIT ".Str::upper($title) : "EDIT ".Str::upper($table),
           'popupActive' => 'popupEdit'
         ])
           @foreach ($columns as $item)
