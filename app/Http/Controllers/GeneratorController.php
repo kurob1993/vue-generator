@@ -35,7 +35,7 @@ class GeneratorController extends Controller
         $columns = collect($nameOfTable);
         $columns->transform(function ($item, $key) use ($table) {
             return [
-                'column' => $item->COLUMN_NAME,
+                'column' => str_replace("_","", $item->COLUMN_NAME),
                 'type' => $this->convert($item->DATA_TYPE),
                 'required' => $this->isNullable($item->IS_NULLABLE)
             ];
