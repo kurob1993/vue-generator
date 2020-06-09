@@ -187,7 +187,7 @@ export default {
 
       this.axios({
          method: "get",
-         url: this.endpoint +"/" + selected[0].nik,
+         url: this.endpoint +"/" + selected[0].{{$columns[0]['column']}},
          timeout: 0,
          headers: {
             Accept: "application/json",
@@ -280,7 +280,7 @@ export default {
       this.$refs["VueGT"].selectedRows.forEach(row => {
         this.axios({
             method: "delete",
-            url: this.endpoint +"/"+ row.nik,
+            url: this.endpoint +"/"+ row.{{$columns[0]['column']}},
             timeout: 0,
             headers: {
                Accept: "application/json",
