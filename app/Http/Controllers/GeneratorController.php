@@ -63,23 +63,29 @@ class GeneratorController extends Controller
             'public/generator/' . $table . '/' . $table . '.vue',
             view('template-vue', compact('columns', 'table', 'title','endpoint'))->render()
         );
+        Storage::put(
+            'public/generator/' . $table . '/models/' . $table . '.js',
+            view('template-vue', compact('columns', 'table', 'title','endpoint'))->render()
+        );
+        Storage::put(
+            'public/generator/' . $table . '/services/' . $table . '.service.js',
+            view('template-vue', compact('columns', 'table', 'title','endpoint'))->render()
+        );
 
         return redirect()->route('generator.files');
     }
 
     public function files()
     {
-        $files = [];
+        $group = [];
         $dir = Storage::allDirectories('public/generator');
         foreach ($dir as $key => $items) {
             foreach (Storage::files($items) as $key => $item) {
-                array_push($files, $item);
+                $group[explode('/',$item)[2]][] = str_replace("public", "storage", $item);;
             }
         }
-        $data = collect($files);
-        $data->transform(function ($item, $key) {
-            return str_replace("public", "storage", $item);
-        });
+        
+        $data = collect($group);
         return view('files', compact('data'));
     }
 

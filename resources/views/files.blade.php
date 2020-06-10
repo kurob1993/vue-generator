@@ -10,10 +10,15 @@
             <div class="card-body">
                <div class="table-responsive">
                   <table class="table table-striped table-hover table-bordered">
-                     @foreach ($data as $item)
-                     <tr>
-                        <td><a href="{{ url($item) }}" download="">{{ $item }}</a></td>
-                     </tr>
+                     @foreach ($data as $key => $items)
+                        <tr>
+                           <td>{{$key}}</td>
+                        </tr>
+                        @foreach ($items as $item)
+                           <tr>
+                              <td><a href="{{ url($item) }}" download="" class="ml-5">{{ $item }}</a></td>
+                           </tr>
+                        @endforeach
                      @endforeach
                   </table>
                </div>
