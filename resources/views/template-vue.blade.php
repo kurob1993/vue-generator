@@ -1,15 +1,15 @@
 <template>
   <vs-row vs-justify="center">
     <vs-col type="flex" vs-justify="center" vs-align="center" vs-lg="12" vs-xs="12">
-      <vs-card>
+      <vs-card id="with-loading" class="vs-con-loading__container">
         <vs-row vs-type="flex" vs-justify="center">
           <vs-col vs-type="flex" :vs-justify="this.justifyTitle" vs-align="center" vs-lg="6" vs-xs="12" >
             <h4 class="card-title d-flex">@{{ title }}</h4>
           </vs-col>
           <vs-col vs-type="flex" :vs-justify="this.justifyButton" vs-align="center" vs-lg="6" vs-xs="12" >
             <vs-button color="primary" type="filled" icon="add" size="small" class="mx-1" @click="newData()" >CREATE</vs-button>
-            <vs-button color="warning" type="filled" icon="edit" size="small" class="mx-1" @click="editData()" >EDIT</vs-button>
-            <vs-button color="danger" type="filled" icon="delete" size="small" class="mx-1" @click="deleteData()" >DELETE</vs-button>
+            <vs-button id="edit-with-loading" color="warning" type="filled" icon="edit" size="small" class="vs-con-loading__container mx-1" @click="editData()" >EDIT</vs-button>
+            <vs-button id="delete-with-loading" color="danger" type="filled" icon="delete" size="small" class="vs-con-loading__container mx-1" @click="deleteData()" >DELETE</vs-button>
           </vs-col>
         </vs-row>
 
@@ -49,8 +49,8 @@
 
           <vs-divider />
           <div class="d-flex">
-              <vs-button button="submit" class="ml-auto" color="success" type="filled">Save</vs-button>
-              <vs-button class="ml-2" color="danger" type="filled" @click="popup=false">Cancel</vs-button>
+            <vs-button button="submit" id="save-with-loading" class="vs-con-loading__container ml-auto" color="success" type="filled">Save</vs-button>
+            <vs-button class="ml-2" color="danger" type="filled" @click="popup=false">Cancel</vs-button>
           </div>
         @endform
       @endpopup
@@ -133,6 +133,9 @@ export default {
     },
 
     getData() {
+      this.$vs.loading({
+        container: '#with-loading'
+      })
       this.rows = [];
       this.axios({
          method: "get",
@@ -150,6 +153,7 @@ export default {
           response.data.content.forEach(element => {
             this.rows.push(element);
           });
+          this.$vs.loading.close('#with-loading > .con-vs-loading')
         })
         .catch(error => {
           this.$vs.notify({
@@ -157,6 +161,7 @@ export default {
             color: "danger",
             icon: "error"
           });
+          this.$vs.loading.close('#with-loading > .con-vs-loading')
         });
     },
     // for table --- end ---
@@ -185,6 +190,10 @@ export default {
         return;
       }
 
+      this.$vs.loading({
+        container: '#edit-with-loading',
+        scale: 0.5
+      })
       this.axios({
          method: "get",
          url: this.endpoint +"/" + selected[0].{{$columns[0]['column']}},
@@ -201,6 +210,7 @@ export default {
           @endforeach
           this.popupTitle = "Edit " + this.title;
           this.popup = true;
+          this.$vs.loading.close('#edit-with-loading > .con-vs-loading')
         })
         .catch(error => {
           this.$vs.notify({
@@ -208,10 +218,15 @@ export default {
             color: "danger",
             icon: "error"
           });
+          this.$vs.loading.close('#edit-with-loading > .con-vs-loading')
         });
     },
 
     save() {
+      this.$vs.loading({
+        container: '#save-with-loading',
+        scale: 0.5
+      })
       this.axios({
          method: this.isNew ? "post" : "put",
          url: this.endpoint,
@@ -244,6 +259,7 @@ export default {
           }
 
           this.$vs.notify(this.notify);
+          this.$vs.loading.close('#save-with-loading > .con-vs-loading')
         })
         .catch(error => {
           this.$vs.notify({
@@ -251,6 +267,7 @@ export default {
             color: "danger",
             icon: "error"
           });
+          this.$vs.loading.close('#save-with-loading > .con-vs-loading')
         });
     },
 
@@ -278,6 +295,10 @@ export default {
     actDelete() {
       this.rows = [];
       this.$refs["VueGT"].selectedRows.forEach(row => {
+        this.$vs.loading({
+          container: '#delete-with-loading',
+          scale: 0.5
+        })
         this.axios({
             method: "delete",
             url: this.endpoint +"/"+ row.{{$columns[0]['column']}},
@@ -303,6 +324,7 @@ export default {
             }
             this.getData();
             this.$vs.notify(this.notify);
+            this.$vs.loading.close('#delete-with-loading > .con-vs-loading')
           })
           .catch(error => {
             this.$vs.notify({
@@ -310,6 +332,7 @@ export default {
               color: "danger",
               icon: "error"
             });
+            this.$vs.loading.close('#delete-with-loading > .con-vs-loading')
           });
       });
       this.popup = false;
