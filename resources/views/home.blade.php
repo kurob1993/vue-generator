@@ -30,7 +30,7 @@
                         <input type="text" name="title" id="title" class="form-control my-2" placeholder="Data Master Karyawan" required>
 
                         <label for="endpoint">Endpoint Api</label>
-                        <input type="text" name="endpoint" id="endpoint" class="form-control my-2" placeholder="/api/Dokter" required>
+                        <input type="text" name="endpoint" id="endpoint" class="form-control my-2" placeholder="api/Dokter" required>
 
                         <button type="submit" class="btn btn-primary my-2">Generate</button>
                     </form>

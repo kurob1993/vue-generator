@@ -7,7 +7,7 @@
          <vs-input 
             type="text" 
             class="inputx" 
-            v-model="{{$vmodel}}" 
+            v-model="model.{{$vmodel}}" 
             id="{{$vmodel}}" 
             placeholder="{{isset($placeholder) ? $placeholder : ''}}" 
          />

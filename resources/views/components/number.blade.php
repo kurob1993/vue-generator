@@ -4,7 +4,7 @@
    </vs-col>
    <vs-col vs-w="8" vs-xs="12">
       <ValidationProvider tag="div" rules="{{$required}}" name="{{$label}}" v-slot="{ errors }">
-         <vs-input-number v-model="{{$vmodel}}" id="{{$vmodel}}" min="0" max="999999999" :step="1" />
+         <vs-input-number v-model="{{$vmodel}}" id="model.{{$vmodel}}" min="0" max="999999999" :step="1" />
          <span class="text-danger d-block">@{{ errors[0] }}</span>
       </ValidationProvider>
    </vs-col>

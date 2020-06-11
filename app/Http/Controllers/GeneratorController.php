@@ -60,16 +60,18 @@ class GeneratorController extends Controller
         $title = $request->titleHeader;
         $endpoint = $request->endpoint;
         Storage::put(
-            'public/generator/' . $table . '/' . $table . '.vue',
+            'public/generator/' . $table . '/page/' . $table . '.vue',
             view('template-vue', compact('columns', 'table', 'title','endpoint'))->render()
         );
+
         Storage::put(
-            'public/generator/' . $table . '/models/' . $table . '.js',
-            view('template-vue', compact('columns', 'table', 'title','endpoint'))->render()
+            'public/generator/' . $table . '/model/' . $table . '.js',
+            view('template-model', compact('columns', 'table', 'title','endpoint'))->render()
         );
+        
         Storage::put(
-            'public/generator/' . $table . '/services/' . $table . '.service.js',
-            view('template-vue', compact('columns', 'table', 'title','endpoint'))->render()
+            'public/generator/' . $table . '/service/' . $table . '.service.js',
+            view('template-service', compact('columns', 'table', 'title','endpoint'))->render()
         );
 
         return redirect()->route('generator.files');
@@ -77,15 +79,19 @@ class GeneratorController extends Controller
 
     public function files()
     {
-        $group = [];
-        $dir = Storage::allDirectories('public/generator');
-        foreach ($dir as $key => $items) {
-            foreach (Storage::files($items) as $key => $item) {
-                $group[explode('/',$item)[2]][] = str_replace("public", "storage", $item);;
-            }
-        }
-        
-        $data = collect($group);
+        $dir = Storage::allDirectories('public/generator');        
+        $data = collect($dir);
+        $data = $data->map(function($item, $key){
+            return Storage::files($item);
+        })->reject(function($item, $key){
+            return count($item) == 0;
+        })->mapToGroups(function($item, $key){
+            return [explode('/',$item[0])[2] => str_replace("public", "storage", $item[0])];
+        });
+
+        // $data = $data->get('dokter')->mapToGroups(function($item, $key){
+        //     return ['dokter' => $item];
+        // });
         return view('files', compact('data'));
     }
 

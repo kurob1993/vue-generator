@@ -16,7 +16,10 @@
                         </tr>
                         @foreach ($items as $item)
                            <tr>
-                              <td><a href="{{ url($item) }}" download="" class="ml-5">{{ $item }}</a></td>
+                              <td>
+                                 @php($label = explode('/', $item))
+                                 <a href="{{ url($item) }}" download="" class="ml-5"> {{ $label[3] }} - {{ $label[4] }} </a>
+                              </td>
                            </tr>
                         @endforeach
                      @endforeach

@@ -60,17 +60,13 @@
 </template>
 
 <script>
+import {{ Str::title($table) }} from '@/models/{{$table}}'
+import {{ Str::title($table) }}Service from '@/services/{{$table}}.service'
 
 export default {
   name: "{{$table}}",
   data: () => ({
-
-    @foreach ($columns as $item)
-       {{$item['column']}}: "",
-    @endforeach
-
-    endpoint: '{{$endpoint}}',
-    token: localStorage.getItem('tokenType')+' '+localStorage.getItem('accessToken'),
+    model: new {{ Str::title($table) }}(),
     title: "{{Str::upper($title)}}",
     isNew: true,
     justifyTitle: "flex-start",
@@ -132,22 +128,19 @@ export default {
       this.getData();
     },
 
+    /*
+    * @getData() : inisialisasi data untuk ditampikan dalam tabel
+    *
+    */
     getData() {
       this.$vs.loading({
         container: '#with-loading'
       })
       this.rows = [];
-      this.axios({
-         method: "get",
-         url: this.endpoint +"?pageNum=" + (this.serverParams.page - 1) + "&pageSize=" + this.serverParams.perPage,
-         timeout: 0,
-         headers: {
-            Accept: "application/json",
-            Authorization: this.token
-         }
-      })
+        let query = "?pageNum=" + this.serverParams.page + "&pageSize=" + this.serverParams.perPage;
+        {{ Str::title($table) }}Service.get(query)
         .then(response => {
-          this.serverParams.page = response.data.pageable.pageNumber + 1;
+          this.serverParams.page = response.data.pageable.pageNumber+1;
           this.serverParams.perPage = response.data.pageable.pageSize;
           this.totalRecords = response.data.totalElements;
           response.data.content.forEach(element => {
@@ -165,16 +158,24 @@ export default {
         });
     },
     // for table --- end ---
-
+    
+    /*
+    * @newData() : inisialisasi data untuk membuat data baru
+    *
+    */
     newData() {
       @foreach ($columns as $item)
-        this.{{$item['column']}} = "";
+        this.model.{{$item['column']}} = "";
       @endforeach
       this.isNew = true;
       this.popupTitle = "Create " + this.title;
       this.popup = true;
     },
 
+    /*
+    * @editData() : inisialisasi data yang akan dirubah
+    *
+    */
     editData() {
       let selected = this.$refs["VueGT"].selectedRows;
       if (selected.length != 1) {
@@ -194,19 +195,13 @@ export default {
         container: '#edit-with-loading',
         scale: 0.5
       })
-      this.axios({
-         method: "get",
-         url: this.endpoint +"/" + selected[0].{{$columns[0]['column']}},
-         timeout: 0,
-         headers: {
-            Accept: "application/json",
-            Authorization: this.token
-         }
-      })
+
+      let id = selected[0].{{$columns[0]['column']}};
+      {{ Str::title($table) }}Service.getById(id)
         .then(response => {
           this.isNew = false;
           @foreach ($columns as $item)
-            this.{{$item['column']}} = response.data.{{$item['column']}};
+            this.model.{{$item['column']}} = response.data.{{$item['column']}};
           @endforeach
           this.popupTitle = "Edit " + this.title;
           this.popup = true;
@@ -222,25 +217,17 @@ export default {
         });
     },
 
+    /*
+    * @save() : menyimpan data baru atau perubahan data
+    *
+    */
     save() {
       this.$vs.loading({
         container: '#save-with-loading',
         scale: 0.5
       })
-      this.axios({
-         method: this.isNew ? "post" : "put",
-         url: this.endpoint,
-         timeout: 0,
-         headers: {
-            Accept: "application/json",
-            Authorization: this.token
-         },
-         data: {
-            @foreach ($columns as $item)
-              {{$item['column']}}: this.{{$item['column']}},
-            @endforeach
-         }
-      })
+      let data = this.model;
+      {{ Str::title($table) }}Service[(this.isNew ? "post" : "put")](data)
         .then(response => {
           if (response.status == 200) {
             this.getData();
@@ -271,6 +258,10 @@ export default {
         });
     },
 
+    /*
+    * @deleteData() : inisialisasi data yang akan dihapsu
+    *
+    */
     deleteData() {
       let selected = this.$refs["VueGT"].selectedRows;
       if (selected.length == 0) {
@@ -292,6 +283,10 @@ export default {
       });
     },
 
+    /*
+    * @actDelete() : menghapus data sesuai data yang dipilih
+    *
+    */
     actDelete() {
       this.rows = [];
       this.$refs["VueGT"].selectedRows.forEach(row => {
@@ -299,15 +294,9 @@ export default {
           container: '#delete-with-loading',
           scale: 0.5
         })
-        this.axios({
-            method: "delete",
-            url: this.endpoint +"/"+ row.{{$columns[0]['column']}},
-            timeout: 0,
-            headers: {
-               Accept: "application/json",
-               Authorization: this.token
-            }
-        })
+        
+        let id = row.{{$columns[0]['column']}};
+        {{ Str::title($table) }}Service.delete(id)
           .then(response => {
             if (response.status == 200) {
               this.notify = {
@@ -338,6 +327,10 @@ export default {
       this.popup = false;
     },
 
+    /*
+    * @handleResize() : digunakan untuk mengatur propertis ketika ada perubhan screen
+    *
+    */
     handleResize() {
       if (window.innerWidth < 601) {
         this.justifyTitle = "center";
