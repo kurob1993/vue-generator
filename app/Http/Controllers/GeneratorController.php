@@ -79,7 +79,7 @@ class GeneratorController extends Controller
         return redirect()->route('generator.files');
     }
 
-    public function files()
+    public function files(Request $request)
     {
         $dir = Storage::allDirectories('public/generator');        
         $data = collect($dir);
@@ -90,11 +90,14 @@ class GeneratorController extends Controller
         })->mapToGroups(function($item, $key){
             return [explode('/',$item[0])[2] => str_replace("public", "storage", $item[0])];
         });
-
-        // $data = $data->get('dokter')->mapToGroups(function($item, $key){
-        //     return ['dokter' => $item];
-        // });
-        return view('files', compact('data'));
+        $group = $data;
+        if (isset($request->cari)) {
+            $data = $data->get($request->cari)->mapToGroups(function($item, $key) use($request) {
+                return [$request->cari => $item];
+            });
+        }
+        
+        return view('files', compact('data','group'));
     }
 
     public function isNullable($data)

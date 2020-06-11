@@ -6,8 +6,22 @@
       <div class="col-md-12">
          <div class="card">
             <div class="card-header">Files</div>
-
             <div class="card-body">
+               <form action="{{route('generator.files')}}" method="GET">
+                  <div class="row mb-2">
+                     <div class="col-md-11">
+                        <select name="cari" id="cari" class="form-control mb-3 js-example-basic-single">
+                           <option value="">ALL</option>
+                           @foreach ($group as $key => $items)
+                           <option value="{{$key}}">{{$key}}</option>
+                           @endforeach
+                        </select>
+                     </div>
+                     <div class="col-md-1">
+                        <button type="submit" class="btn btn-primary ml-2">Cari</button>
+                     </div>
+                  </div>
+               </form>
                <div class="table-responsive">
                   <table class="table table-striped table-hover table-bordered">
                      @foreach ($data as $key => $items)
@@ -31,3 +45,13 @@
    </div>
 </div>
 @endsection
+
+@push('script')
+<script>
+   $(document).ready(function() {
+      $('.js-example-basic-single').select2({
+         theme: "bootstrap"
+      });
+   });
+</script>
+@endpush
