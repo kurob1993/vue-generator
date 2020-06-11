@@ -4,9 +4,9 @@
     </vs-col>
     <vs-col vs-w="8" vs-xs="12">
         <ValidationProvider tag="div" rules="{{$required}}" name="{{$label}}" v-slot="{ errors }">
-            <vs-switch color="success" v-model="model.{{$vmodel}}" id="{{$vmodel}}">
-                <span slot="0">Active</span>
-                <span slot="1">Not Active</span>
+            <vs-switch color="success" v-model="{{ $vmodel }}Switch">
+                <span slot="on">Active</span>
+                <span slot="off">Not Active</span>
             </vs-switch>
             <span class="text-danger d-block">@{{ errors[0] }}</span>
         </ValidationProvider>
