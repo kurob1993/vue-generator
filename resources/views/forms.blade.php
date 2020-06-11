@@ -77,6 +77,14 @@
                                     placeholder="Title" value="{{ $item['required'] }}">
                               </td>
                            </tr>
+                           <tr>
+                              <td width="10%">Max Char</td>
+                              <td width="5%">:</td>
+                              <td>
+                                 <input type="text" class="form-control" name="max[]" 
+                                    placeholder="Max Character" value="{{ $item['max'] }}">
+                              </td>
+                           </tr>
                         </tbody>
                      </table>
                      @endforeach

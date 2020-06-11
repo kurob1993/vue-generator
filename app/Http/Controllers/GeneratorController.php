@@ -37,7 +37,8 @@ class GeneratorController extends Controller
             return [
                 'column' => str_replace("_","", $item->COLUMN_NAME),
                 'type' => $this->convert($item->DATA_TYPE),
-                'required' => $this->isNullable($item->IS_NULLABLE)
+                'required' => $this->isNullable($item->IS_NULLABLE),
+                'max' => $item->CHARACTER_MAXIMUM_LENGTH
             ];
         });
         return view('forms', compact('columns', 'table', 'title', 'endpoint'));
@@ -52,7 +53,8 @@ class GeneratorController extends Controller
                 'column' => $item,
                 'type' => $request->type[$key],
                 'required' => $request->required[$key],
-                'title' => $request->title[$key]
+                'title' => $request->title[$key],
+                'max' => $request->max[$key]
             ];
         });
 

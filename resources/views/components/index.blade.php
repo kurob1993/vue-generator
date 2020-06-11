@@ -4,7 +4,8 @@
          'label' => Str::upper($title),
          'vmodel' => $column,
          'placeholder' => Str::upper($title),
-         'required' => $required
+         'required' => $required,
+         'max' => $max
       ])
       @endtext
       @break
@@ -13,7 +14,8 @@
       @textarea([
          'label' => Str::upper($title),
          'vmodel' => $column,
-         'required' => $required
+         'required' => $required,
+         'max' => $max
       ])
       @endtextarea
       @break
@@ -22,7 +24,8 @@
       @switchInput([
          'label' => Str::upper($title),
          'vmodel' => $column,
-         'required' => $required
+         'required' => $required,
+         'max' => $max
       ])
       @endswitchInput
       @break
@@ -31,7 +34,8 @@
       @number([
          'label' => Str::upper($title),
          'vmodel' => $column,
-         'required' => $required
+         'required' => $required,
+         'max' => $max
       ])
       @endnumber
       @break
@@ -40,7 +44,8 @@
       @textNumber([
          'label' => Str::upper($title),
          'vmodel' => $column,
-         'required' => $required
+         'required' => $required,
+         'max' => $max
       ])
       @endtextNumber
       @break
@@ -49,7 +54,8 @@
       @date([
          'label' => Str::upper($title),
          'vmodel' => $column,
-         'required' => $required
+         'required' => $required,
+         'max' => $max
       ])
       @enddate
       @break
@@ -59,7 +65,8 @@
          'label' => Str::upper($title),
          'vmodel' => $column,
          'placeholder' => '',
-         'required' => $required
+         'required' => $required,
+         'max' => $max
       ])
       @endtext
       
