@@ -346,10 +346,10 @@ export default {
       computed: {
         {{ $item['column'] }}Switch: {
           get(){
-            return this.model.{{$item['column']}};
+            return this.model.{{$item['column']}} == '1' ? true : false;
           },
           set(val) {
-            this.model.{{$item['column']}} = val ? '1' : '0'
+            this.model.{{$item['column']}} = val ? '1' : '0';
           }
         }
       },
