@@ -18,7 +18,7 @@
                     <form action="{{ route('columnsTable') }}" method="POST">
                         @csrf
                         <label for="table">Pilih Table</label>
-                        <select name="table" id="table" class="form-control my-2" required>
+                        <select name="table" id="table" class="form-control my-2 js-example-basic-single" required>
                             @foreach ($tables as $table)
                                 @foreach ($table as $key => $value)
                                 <option value="{{$value}}">{{$value}}</option>
@@ -40,3 +40,13 @@
     </div>
 </div>
 @endsection
+
+@push('script')
+<script>
+   $(document).ready(function() {
+      $('.js-example-basic-single').select2({
+         theme: "bootstrap"
+      });
+   });
+</script>
+@endpush
