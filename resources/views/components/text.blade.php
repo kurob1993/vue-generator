@@ -10,6 +10,9 @@
             v-model="model.{{$vmodel}}" 
             id="{{$vmodel}}" 
             placeholder="{{isset($placeholder) ? $placeholder : ''}}" 
+            @if ($disabled)
+            :disabled='{{$vmodel}}ReadOnly'
+            @endif
          />
          <span class="text-danger d-block">@{{ errors[0] }}</span>
      </ValidationProvider>

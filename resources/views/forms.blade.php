@@ -41,6 +41,7 @@
                               <th width="10%">Column</th>
                               <th width="5%">:</th>
                               <th>
+                                 <input type="hidden" class="form-control" name="disabled[]" value="{{ $item['disabled'] }}">
                                  <input type="text" class="form-control" name="column[]" readonly
                                     placeholder="column" value="{{ $item['column'] }}">
                               </th>

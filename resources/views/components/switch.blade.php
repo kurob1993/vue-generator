@@ -4,7 +4,13 @@
     </vs-col>
     <vs-col vs-w="8" vs-xs="12">
         <ValidationProvider tag="div" rules="{{$required}}" name="{{$label}}" v-slot="{ errors }">
-            <vs-switch color="success" v-model="{{ $vmodel }}Switch">
+            <vs-switch 
+                color="success" 
+                v-model="{{ $vmodel }}Switch" 
+                @if ($disabled)
+                :disabled='{{$vmodel}}ReadOnly'
+                @endif
+            >
                 <span slot="on">Active</span>
                 <span slot="off">Not Active</span>
             </vs-switch>

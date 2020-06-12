@@ -5,7 +5,8 @@
          'vmodel' => $column,
          'placeholder' => Str::upper($title),
          'required' => $required,
-         'max' => $max
+         'max' => $max,
+         'disabled' => $disabled ? true : false
       ])
       @endtext
       @break
@@ -15,7 +16,8 @@
          'label' => Str::upper($title),
          'vmodel' => $column,
          'required' => $required,
-         'max' => $max
+         'max' => $max,
+         'disabled' => $disabled ? true : false
       ])
       @endtextarea
       @break
@@ -25,7 +27,8 @@
          'label' => Str::upper($title),
          'vmodel' => $column,
          'required' => $required,
-         'max' => $max
+         'max' => $max,
+         'disabled' => $disabled ? true : false
       ])
       @endswitchInput
       @break
@@ -35,7 +38,8 @@
          'label' => Str::upper($title),
          'vmodel' => $column,
          'required' => $required,
-         'max' => $max
+         'max' => $max,
+         'disabled' => $disabled ? true : false
       ])
       @endnumber
       @break
@@ -45,7 +49,8 @@
          'label' => Str::upper($title),
          'vmodel' => $column,
          'required' => $required,
-         'max' => $max
+         'max' => $max,
+         'disabled' => $disabled ? true : false
       ])
       @endtextNumber
       @break
@@ -55,7 +60,8 @@
          'label' => Str::upper($title),
          'vmodel' => $column,
          'required' => $required,
-         'max' => $max
+         'max' => $max,
+         'disabled' => $disabled ? true : false
       ])
       @enddate
       @break
@@ -66,7 +72,8 @@
          'vmodel' => $column,
          'placeholder' => '',
          'required' => $required,
-         'max' => $max
+         'max' => $max,
+         'disabled' => $disabled ? true : false
       ])
       @endtext
       

@@ -68,6 +68,14 @@ export default {
   data: () => ({
     model: new {{ Str::title($table) }}(),
     title: "{{Str::upper($title)}}",
+
+    @foreach ($columns as $item)
+      @if($item['disabled'])
+      {{$item['column']}}ReadOnly: false,
+      @endif
+    @endforeach
+
+    idReadOnly: false,
     isNew: true,
     justifyTitle: "flex-start",
     justifyButton: "flex-end",
@@ -165,10 +173,14 @@ export default {
     */
     newData() {
       @foreach ($columns as $item)
+        @if($item['disabled'])
+          this.{{$item['column']}}ReadOnly = false;
+        @endif
+
         this.model.{{$item['column']}} = "";
       @endforeach
       this.isNew = true;
-      this.popupTitle = "Create " + this.title;
+      this.popupTitle = "TAMBAH " + this.title;
       this.popup = true;
     },
 
@@ -201,9 +213,12 @@ export default {
         .then(response => {
           this.isNew = false;
           @foreach ($columns as $item)
+            @if($item['disabled'])
+              this.{{$item['column']}}ReadOnly = true;
+            @endif
             this.model.{{$item['column']}} = response.data.{{$item['column']}};
           @endforeach
-          this.popupTitle = "Edit " + this.title;
+          this.popupTitle = "UBAH " + this.title;
           this.popup = true;
           this.$vs.loading.close('#edit-with-loading > .con-vs-loading')
         })
