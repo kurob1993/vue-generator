@@ -207,7 +207,6 @@ export default {
     *
     */
     actDelete() {
-      this.rows = [];
       this.$refs.VueGT.$refs.table.selectedRows.forEach(row => {
         this.$vs.loading({
           container: '#delete-with-loading',
