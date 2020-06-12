@@ -7,9 +7,9 @@
             <h4 class="card-title d-flex">@{{ title }}</h4>
           </vs-col>
           <vs-col vs-type="flex" :vs-justify="this.justifyButton" vs-align="center" vs-lg="6" vs-xs="12" >
-            <vs-button color="primary" type="filled" icon="add" size="small" class="mx-1" @click="newData()" >CREATE</vs-button>
-            <vs-button id="edit-with-loading" color="warning" type="filled" icon="edit" size="small" class="vs-con-loading__container mx-1" @click="editData()" >EDIT</vs-button>
-            <vs-button id="delete-with-loading" color="danger" type="filled" icon="delete" size="small" class="vs-con-loading__container mx-1" @click="deleteData()" >DELETE</vs-button>
+            <vs-button color="primary" type="filled" icon="add" size="small" class="mx-1" @click="newData()" >TAMBAH</vs-button>
+            <vs-button id="edit-with-loading" color="warning" type="filled" icon="edit" size="small" class="vs-con-loading__container mx-1" @click="editData()" >UBAH</vs-button>
+            <vs-button id="delete-with-loading" color="danger" type="filled" icon="delete" size="small" class="vs-con-loading__container mx-1" @click="deleteData()" >HAPUS</vs-button>
           </vs-col>
         </vs-row>
 
@@ -182,8 +182,8 @@ export default {
         this.notify = {
           text:
             selected.length > 1
-              ? "Does not support multiple edit, please select only one data"
-              : "No data selected",
+              ? "Silahkan pilih satu data"
+              : "Tidak ada data terpilih",
           color: "danger",
           icon: "error"
         };
@@ -266,7 +266,7 @@ export default {
       let selected = this.$refs["VueGT"].selectedRows;
       if (selected.length == 0) {
         this.notify = {
-          text: "No data selected",
+          text: "Tidak ada data terpilih",
           color: "danger",
           icon: "error"
         };
@@ -278,7 +278,7 @@ export default {
         type: "confirm",
         color: "danger",
         title: "Confirm",
-        text: "Are you sure want to delete this data ? ",
+        text: "Apakah anda yakin menghapus data ini?",
         accept: this.actDelete
       });
     },
