@@ -14,27 +14,7 @@
         </vs-row>
 
         <vs-divider />
-        <vue-good-table
-          ref="VueGT"
-          mode="remote"
-          @on-page-change="onPageChange"
-          @on-sort-change="onSortChange"
-          @on-column-filter="onColumnFilter"
-          @on-per-page-change="onPerPageChange"
-          :totalRows="totalRecords"
-          :isLoading.sync="isLoading"
-          :pagination-options="{
-            enabled: true,
-          }"
-          :rows="rows"
-          :columns="columns"
-          :sort-options="{
-            enabled: false,
-          }"
-          :select-options="{ 
-            enabled: true,
-          }"
-        />
+        <GoodTable :service="service" :columns="columns" ref="VueGT" />
         <vs-divider />
       </vs-card>
 
@@ -62,20 +42,22 @@
 <script>
 import {{ Str::title($table) }} from '@/models/{{$table}}'
 import {{ Str::title($table) }}Service from '@/services/{{$table}}.service'
+import GoodTable from '@/components/GoodTable';
 
 export default {
   name: "{{$table}}",
+  components: {
+    GoodTable
+  },
   data: () => ({
+    service: {{ Str::title($table) }}Service,
     model: new {{ Str::title($table) }}(),
     title: "{{Str::upper($title)}}",
-
     @foreach ($columns as $item)
       @if($item['disabled'])
       {{$item['column']}}ReadOnly: false,
       @endif
     @endforeach
-
-    idReadOnly: false,
     isNew: true,
     justifyTitle: "flex-start",
     justifyButton: "flex-end",
@@ -83,90 +65,13 @@ export default {
     popupTitle: "",
     popup: false,
     notify: {},
-    //for table start
-    isLoading: false,
     columns: [
       @foreach ($columns as $item)
         { label : '{{$item['title']}}', field: '{{ Str::lower($item['column'])}}'},
       @endforeach
-    ],
-    rows: [],
-    totalRecords: 0,
-    serverParams: {
-      page: 1,
-      perPage: 10
-    }
-    //for table end
+    ]
   }),
-  methods: {
-    // for table --- start ---
-    updateParams(newProps) {
-      this.serverParams = Object.assign({}, this.serverParams, newProps);
-    },
-
-    onPageChange(params) {
-      this.updateParams({ page: params.currentPage });
-      this.loadItems();
-    },
-
-    onPerPageChange(params) {
-      this.updateParams({ perPage: params.currentPerPage });
-      this.loadItems();
-    },
-
-    onSortChange(params) {
-      this.updateParams({
-        sort: [
-          {
-            type: params.sortType,
-            field: this.columns[params.columnIndex].field
-          }
-        ]
-      });
-      this.loadItems();
-    },
-
-    onColumnFilter(params) {
-      this.updateParams(params);
-      this.loadItems();
-    },
-
-    // load items is what brings back the rows from server
-    loadItems() {
-      this.getData();
-    },
-
-    /*
-    * @getData() : inisialisasi data untuk ditampikan dalam tabel
-    *
-    */
-    getData() {
-      this.$vs.loading({
-        container: '#with-loading'
-      })
-      this.rows = [];
-        let query = "?pageNum=" + this.serverParams.page + "&pageSize=" + this.serverParams.perPage;
-        {{ Str::title($table) }}Service.get(query)
-        .then(response => {
-          this.serverParams.page = response.data.pageable.pageNumber+1;
-          this.serverParams.perPage = response.data.pageable.pageSize;
-          this.totalRecords = response.data.totalElements;
-          response.data.content.forEach(element => {
-            this.rows.push(element);
-          });
-          this.$vs.loading.close('#with-loading > .con-vs-loading')
-        })
-        .catch(error => {
-          this.$vs.notify({
-            text: error,
-            color: "danger",
-            icon: "error"
-          });
-          this.$vs.loading.close('#with-loading > .con-vs-loading')
-        });
-    },
-    // for table --- end ---
-    
+  methods: {    
     /*
     * @newData() : inisialisasi data untuk membuat data baru
     *
@@ -176,7 +81,6 @@ export default {
         @if($item['disabled'])
           this.{{$item['column']}}ReadOnly = false;
         @endif
-
         this.model.{{$item['column']}} = "";
       @endforeach
       this.isNew = true;
@@ -189,7 +93,7 @@ export default {
     *
     */
     editData() {
-      let selected = this.$refs["VueGT"].selectedRows;
+      let selected = this.$refs.VueGT.$refs.table.selectedRows;
       if (selected.length != 1) {
         this.notify = {
           text:
@@ -245,7 +149,7 @@ export default {
       {{ Str::title($table) }}Service[(this.isNew ? "post" : "put")](data)
         .then(response => {
           if (response.status == 200) {
-            this.getData();
+            this.$refs.VueGT.getData();
             this.popup = false;
             this.notify = {
               text: "Success",
@@ -278,7 +182,7 @@ export default {
     *
     */
     deleteData() {
-      let selected = this.$refs["VueGT"].selectedRows;
+      let selected = this.$refs.VueGT.$refs.table.selectedRows;
       if (selected.length == 0) {
         this.notify = {
           text: "Tidak ada data terpilih",
@@ -304,7 +208,7 @@ export default {
     */
     actDelete() {
       this.rows = [];
-      this.$refs["VueGT"].selectedRows.forEach(row => {
+      this.$refs.VueGT.$refs.table.selectedRows.forEach(row => {
         this.$vs.loading({
           container: '#delete-with-loading',
           scale: 0.5
@@ -326,7 +230,7 @@ export default {
                 icon: "error"
               };
             }
-            this.getData();
+            this.$refs.VueGT.getData();
             this.$vs.notify(this.notify);
             this.$vs.loading.close('#delete-with-loading > .con-vs-loading')
           })
@@ -372,10 +276,7 @@ export default {
     @endif
   @endforeach
   },
-  mounted() {
-    this.getData();
-  },
-
+  
   created() {
     window.addEventListener("resize", this.handleResize);
     this.handleResize();
