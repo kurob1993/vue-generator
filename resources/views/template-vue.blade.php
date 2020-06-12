@@ -341,9 +341,10 @@ export default {
       }
     }
   },
+  computed: {
   @foreach ($columns as $item)
     @if ($item['type'] == 'switch')
-      computed: {
+      
         {{ $item['column'] }}Switch: {
           get(){
             return this.model.{{$item['column']}} == '1' ? true : false;
@@ -351,10 +352,11 @@ export default {
           set(val) {
             this.model.{{$item['column']}} = val ? '1' : '0';
           }
-        }
-      },
+        },
+      
     @endif
   @endforeach
+  },
   mounted() {
     this.getData();
   },
