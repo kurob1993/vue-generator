@@ -1,28 +1,43 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = '{{$endpoint}}';
+const API_URL = '{{ $endpoint }}';
 
-class {{ Str::title($table) }}Service {
+class {{ Str::title($table) }} {
+  service(method, url, data){
+    return axios({
+      url: url,
+      method: method,
+      headers: authHeader(),
+      data: data
+    })
+    .then(response => {
+      return { 'success': true, 'data': response.data };
+    })
+    .catch(error => {
+      return { 'success': false, 'data': error.response.data.message };
+    });
+  }
+
   get(params) {
-    return axios.get(API_URL + params, { headers: authHeader() });
+    return this.service('get', API_URL + params);
   }
 
   post(data) {
-    return axios.post(API_URL, data, { headers: authHeader() });
+    return this.service('post', API_URL, data);
   }
 
   put(data) {
-    return axios.put(API_URL, data, { headers: authHeader() });
+    return this.service('put', API_URL, data);
   }
 
   delete(id) {
-    return axios.delete(API_URL +'/'+ id, { headers: authHeader() });
+    return this.service('delete', API_URL + '/' + id);
   }
 
   getById(id) {
-    return axios.get(API_URL +'/'+ id, { headers: authHeader() });
+    return this.service('get', API_URL + '/' + id);
   }
 }
 
-export default new {{ Str::title($table) }}Service();
+export default new {{ Str::title($table) }}();

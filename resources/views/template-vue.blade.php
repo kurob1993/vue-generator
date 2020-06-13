@@ -14,7 +14,7 @@
         </vs-row>
 
         <vs-divider />
-        <GoodTable :service="service" :columns="columns" ref="VueGT" />
+        <GoodTable :model="dataModel" :columns="columns" ref="VueGT" />
         <vs-divider />
       </vs-card>
 
@@ -41,7 +41,6 @@
 
 <script>
 import {{ Str::title($table) }} from '@/models/{{$table}}'
-import {{ Str::title($table) }}Service from '@/services/{{$table}}.service'
 import GoodTable from '@/components/GoodTable';
 
 export default {
@@ -50,21 +49,24 @@ export default {
     GoodTable
   },
   data: () => ({
-    service: {{ Str::title($table) }}Service,
     model: new {{ Str::title($table) }}(),
+    dataModel: {{ Str::title($table) }},
     title: "{{Str::upper($title)}}",
+
+    notify: {},
+    popupTitle: "",
+    isNew: true,
+    popup: false,
     @foreach ($columns as $item)
       @if($item['disabled'])
       {{$item['column']}}ReadOnly: false,
       @endif
     @endforeach
-    isNew: true,
+    
     justifyTitle: "flex-start",
     justifyButton: "flex-end",
-    window: { width: 0, height: 0 },
-    popupTitle: "",
-    popup: false,
-    notify: {},
+    window: { width: 0, height: 0 },   
+    
     columns: [
       @foreach ($columns as $item)
         { label : '{{$item['title']}}', field: '{{ Str::lower($item['column'])}}'},
@@ -92,89 +94,55 @@ export default {
     * @editData() : inisialisasi data yang akan dirubah
     *
     */
-    editData() {
+    async editData() {
       let selected = this.$refs.VueGT.$refs.table.selectedRows;
       if (selected.length != 1) {
         this.notify = {
-          text:
-            selected.length > 1
-              ? "Silahkan pilih satu data"
-              : "Tidak ada data terpilih",
+          text: selected.length > 1 ? "Silahkan pilih satu data" : "Tidak ada data terpilih",
           color: "danger",
           icon: "error"
         };
         this.$vs.notify(this.notify);
         return;
       }
-
-      this.$vs.loading({
-        container: '#edit-with-loading',
-        scale: 0.5
-      })
+      
+      this.$vs.loading({ container: '#edit-with-loading', scale: 0.5 })
 
       let id = selected[0].{{$columns[0]['column']}};
-      {{ Str::title($table) }}Service.getById(id)
-        .then(response => {
-          this.isNew = false;
-          @foreach ($columns as $item)
-            @if($item['disabled'])
-              this.{{$item['column']}}ReadOnly = true;
-            @endif
-            this.model.{{$item['column']}} = response.data.{{$item['column']}};
-          @endforeach
-          this.popupTitle = "UBAH " + this.title;
-          this.popup = true;
-          this.$vs.loading.close('#edit-with-loading > .con-vs-loading')
-        })
-        .catch(error => {
-          this.$vs.notify({
-            text: error,
-            color: "danger",
-            icon: "error"
-          });
-          this.$vs.loading.close('#edit-with-loading > .con-vs-loading')
-        });
+      let {{ $table }} = new {{ Str::title($table) }}();
+      let getById = await {{ $table }}.getById(id);
+      if (getById.success) {
+        @foreach ($columns as $item)
+          @if($item['disabled'])
+            this.{{$item['column']}}ReadOnly = true;
+          @endif
+          this.model.{{$item['column']}} = getById.data.{{$item['column']}};
+        @endforeach
+        this.isNew = false;
+        this.popupTitle = 'UBAH ' + this.title;
+        this.popup = true;
+      }else{
+        this.$vs.notify({ text: getById.data, color: 'danger', icon: 'error' });
+      }
+      this.$vs.loading.close('#edit-with-loading > .con-vs-loading');
     },
 
     /*
     * @save() : menyimpan data baru atau perubahan data
     *
     */
-    save() {
-      this.$vs.loading({
-        container: '#save-with-loading',
-        scale: 0.5
-      })
-      let data = this.model;
-      {{ Str::title($table) }}Service[(this.isNew ? "post" : "put")](data)
-        .then(response => {
-          if (response.status == 200) {
-            this.$refs.VueGT.getData();
-            this.popup = false;
-            this.notify = {
-              text: "Success",
-              color: "success",
-              icon: "done"
-            };
-          } else {
-            this.notify = {
-              text: response.statusText,
-              color: "danger",
-              icon: "error"
-            };
-          }
-
-          this.$vs.notify(this.notify);
-          this.$vs.loading.close('#save-with-loading > .con-vs-loading')
-        })
-        .catch(error => {
-          this.$vs.notify({
-            text: error,
-            color: "danger",
-            icon: "error"
-          });
-          this.$vs.loading.close('#save-with-loading > .con-vs-loading')
-        });
+    async save() {
+      this.$vs.loading({ container: '#save-with-loading', scale: 0.5 })
+      let save = this.isNew ? await this.model.post() : await this.model.put();
+      if (save.success) {
+        this.$refs.VueGT.getData();
+        this.popup = false;
+        this.notify = { text: 'Success', color: 'success', icon: 'done' };
+      }else{
+        this.notify = { text: save.data, color: 'danger', icon: 'error' };
+      }
+      this.$vs.notify(this.notify);
+      this.$vs.loading.close('#save-with-loading > .con-vs-loading');
     },
 
     /*
@@ -184,11 +152,7 @@ export default {
     deleteData() {
       let selected = this.$refs.VueGT.$refs.table.selectedRows;
       if (selected.length == 0) {
-        this.notify = {
-          text: "Tidak ada data terpilih",
-          color: "danger",
-          icon: "error"
-        };
+        this.notify = { text: "Tidak ada data terpilih", color: "danger", icon: "error" };
         this.$vs.notify(this.notify);
         return;
       }
@@ -207,40 +171,18 @@ export default {
     *
     */
     actDelete() {
-      this.$refs.VueGT.$refs.table.selectedRows.forEach(row => {
-        this.$vs.loading({
-          container: '#delete-with-loading',
-          scale: 0.5
-        })
-        
+      this.$refs.VueGT.$refs.table.selectedRows.forEach(async row =>  {
+        this.$vs.loading({ container: '#delete-with-loading', scale: 0.5 });
         let id = row.{{$columns[0]['column']}};
-        {{ Str::title($table) }}Service.delete(id)
-          .then(response => {
-            if (response.status == 200) {
-              this.notify = {
-                text: "Success",
-                color: "success",
-                icon: "done"
-              };
-            } else {
-              this.notify = {
-                text: response.statusText,
-                color: "danger",
-                icon: "error"
-              };
-            }
-            this.$refs.VueGT.getData();
-            this.$vs.notify(this.notify);
-            this.$vs.loading.close('#delete-with-loading > .con-vs-loading')
-          })
-          .catch(error => {
-            this.$vs.notify({
-              text: error,
-              color: "danger",
-              icon: "error"
-            });
-            this.$vs.loading.close('#delete-with-loading > .con-vs-loading')
-          });
+        let hapus = await this.model.delete(id);
+        if (hapus.success) {
+          this.notify = { text: 'Success', color: 'success', icon: 'done' };
+        }else{
+          this.notify = { text: hapus.data, color: 'danger', icon: 'error' };
+        }
+        this.$refs.VueGT.getData();
+        this.$vs.notify(this.notify);
+        this.$vs.loading.close('#delete-with-loading > .con-vs-loading');
       });
       this.popup = false;
     },
