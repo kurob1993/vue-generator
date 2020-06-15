@@ -8,30 +8,7 @@ export default class {{ Str::title($table) }} {
   }
 
   async get(params) {
-    let data = await {{ Str::title($table) }}Service.get(params);
-    let json = data.data;
-    let res = { success: true, data: {} };
-
-    if (data.success) {
-      res.data = {
-        rows: [],
-        totalRecords: 0,
-        serverParams: {
-          page: 1,
-          perPage: 10
-        }
-      };
-
-      res.data.rows = json.content;
-      res.data.totalRecords = json.totalElements;
-      res.data.serverParams.page = json.pageable.pageNumber + 1;
-      res.data.serverParams.perPage = json.pageable.pageSize;
-    } else {
-      res.success = false;
-      res.data = json;
-    }
-
-    return res;
+    return await {{ Str::title($table) }}Service.get(params);
   }
 
   async post() {
