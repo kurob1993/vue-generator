@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import {{ Str::title($table) }} from '@/models/{{$table}}'
+import {{Str::title($table)}} from '@/models/{{Str::limit($table,4,'')}}/{{$table}}'
 import GoodTable from '@/components/GoodTable';
 
 export default {
