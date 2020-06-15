@@ -5,6 +5,7 @@
     <vs-col vs-w="8" vs-xs="12">
         <ValidationProvider tag="div" rules="{{$required}}" name="{{$label}}" v-slot="{ errors }">
             <vs-switch 
+                type="button"
                 color="success" 
                 v-model="{{ $vmodel }}Switch" 
                 @if ($disabled)
