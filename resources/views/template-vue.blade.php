@@ -14,7 +14,18 @@
         </vs-row>
 
         <vs-divider />
-        <GoodTable :model="dataModel" :columns="columns" ref="VueGT" />
+        <GoodTable :model="dataModel" :columns="columns" ref="VueGT">
+          <template slot-scope="{ VueGTprops }">
+            @foreach ($columns as $item)
+              @if ($item['type'] == 'switch')
+                  <vs-chip v-if="VueGTprops.column.field == 'activestat'" :color="VueGTprops.row.activestat == 1 ? 'success' : ''">
+                    <span v-if="VueGTprops.row.{{$item['column']}} == 1">Aktif</span>
+                    <span v-else="">Tidak Aktif</span>
+                  </vs-chip>
+              @endif
+            @endforeach
+          </template>
+        </GoodTable>
         <vs-divider />
       </vs-card>
 
