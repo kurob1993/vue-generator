@@ -32,5 +32,6 @@ class AppServiceProvider extends ServiceProvider
         Blade::component('components.number', 'number');
         Blade::component('components.popup', 'popup');
         Blade::component('components.form', 'form');
+        Blade::component('components.select', 'select');
     }
 }

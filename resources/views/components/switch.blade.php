@@ -12,8 +12,8 @@
                 :disabled='{{$vmodel}}ReadOnly'
                 @endif
             >
-                <span slot="on">Active</span>
-                <span slot="off">Not Active</span>
+                <span slot="on">Aktif</span>
+                <span slot="off">Tidak Aktif</span>
             </vs-switch>
             <span class="text-danger d-block">@{{ errors[0] }}</span>
         </ValidationProvider>

@@ -11,6 +11,18 @@
       @endtext
       @break
 
+   @case('select')
+      @select([
+         'label' => Str::upper($title),
+         'vmodel' => $column,
+         'placeholder' => Str::upper($title),
+         'required' => $required,
+         'max' => $max,
+         'disabled' => $disabled ? true : false
+      ])
+      @endselect
+      @break
+
    @case('textarea')
       @textarea([
          'label' => Str::upper($title),

@@ -40,8 +40,8 @@
 
           <vs-divider />
           <div class="d-flex">
-            <vs-button button="submit" id="save-with-loading" class="vs-con-loading__container ml-auto" color="success" type="filled">Save</vs-button>
-            <vs-button class="ml-2" color="danger" type="filled" @click="popup=false">Cancel</vs-button>
+            <vs-button button="submit" id="save-with-loading" class="vs-con-loading__container ml-auto" color="success" type="filled">Simpan</vs-button>
+            <vs-button class="ml-2" color="danger" type="filled" @click="popup=false">Batal</vs-button>
           </div>
         @endform
       @endpopup
@@ -52,6 +52,11 @@
 
 <script>
 import {{Str::title($table)}} from '@/models/{{Str::limit($table,4,'')}}/{{$table}}'
+@foreach ($columns as $item)
+  @if($item['type'] == 'select')
+  import {{Str::limit(Str::title($table),4,'')}}{{$item['column']}} from '@/models/{{Str::limit($table,4,'')}}/{{Str::limit($table,4,'')}}{{$item['column']}}'
+  @endif
+@endforeach
 import GoodTable from '@/components/GoodTable';
 
 export default {
@@ -71,6 +76,10 @@ export default {
     @foreach ($columns as $item)
       @if($item['disabled'])
       {{$item['column']}}ReadOnly: false,
+      @endif
+
+      @if($item['type'] == 'select')
+      {{$item['column']}}Options: {{Str::limit(Str::title($table),4,'')}}{{$item['column']}}.data,
       @endif
     @endforeach
     
@@ -148,7 +157,7 @@ export default {
       if (save.success) {
         this.$refs.VueGT.getData();
         this.popup = false;
-        this.notify = { text: 'Success', color: 'success', icon: 'done' };
+        this.notify = { text: 'Sukses', color: 'success', icon: 'done' };
       }else{
         this.notify = { text: save.data, color: 'danger', icon: 'error' };
       }
@@ -169,10 +178,12 @@ export default {
       }
 
       this.$vs.dialog({
-        type: "confirm",
-        color: "danger",
-        title: "Confirm",
-        text: "Apakah anda yakin menghapus data ini?",
+        type: 'confirm',
+        color: 'danger',
+        title: 'Konfirmasi',
+        text: 'Apakah anda yakin menghapus data ini?',
+        acceptText: 'Ya',
+        cancelText: 'Tidak',
         accept: this.actDelete
       });
     },
@@ -187,7 +198,7 @@ export default {
         let id = row.{{$columns[0]['column']}};
         let hapus = await this.model.delete(id);
         if (hapus.success) {
-          this.notify = { text: 'Success', color: 'success', icon: 'done' };
+          this.notify = { text: 'Sukses', color: 'success', icon: 'done' };
         }else{
           this.notify = { text: hapus.data, color: 'danger', icon: 'error' };
         }

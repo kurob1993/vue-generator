@@ -47,7 +47,7 @@ class GeneratorController extends Controller
 
     public function generate(Request $request)
     {
-
+        
         $columns = collect($request->column);
         $columns->transform(function ($item, $key) use ($request) {
             return [
@@ -63,6 +63,15 @@ class GeneratorController extends Controller
         $table = $request->table;
         $title = $request->titleHeader;
         $endpoint = $request->endpoint;
+        
+        foreach ($columns as $key => $value) {
+            if ($value['type'] == 'select') {
+                Storage::put(
+                    'public/generator/' . $table . '/model/' . $value['column'] . '.js',
+                    view('template-data-select', compact('columns', 'table', 'title','endpoint'))->render()
+                );
+            }
+        }
         Storage::put(
             'public/generator/' . $table . '/page/' . $table . '.vue',
             view('template-vue', compact('columns', 'table', 'title','endpoint'))->render()
@@ -89,16 +98,22 @@ class GeneratorController extends Controller
             return Storage::files($item);
         })->reject(function($item, $key){
             return count($item) == 0;
-        })->mapToGroups(function($item, $key){
-            return [explode('/',$item[0])[2] => str_replace("public", "storage", $item[0])];
         });
+
+        $ret = [];
+        foreach ($data as $key => $values) {
+            foreach ($values as $key => $value) {
+                $ret[explode('/',$value)[2]][] = str_replace("public", "storage", $value);
+            }
+        }
+        $data = collect($ret);
+
         $group = $data;
         if (isset($request->cari)) {
             $data = $data->get($request->cari)->mapToGroups(function($item, $key) use($request) {
                 return [$request->cari => $item];
             });
         }
-        
         return view('files', compact('data','group'));
     }
 
