@@ -5,8 +5,8 @@
    <vs-col vs-w="8" vs-xs="7">
       <ValidationProvider tag="div" rules="{{$required}} {{isset($max) ? '|max:'.$max : ''}}" name="{{$label}}" v-slot="{ errors }">
          <vs-input-number 
-            v-model="{{$vmodel}}" 
-            id="model.{{$vmodel}}" 
+            v-model="model.{{$vmodel}}" 
+            id="{{$vmodel}}" 
             min="0" 
             max="999999999" 
             :step="1" 
