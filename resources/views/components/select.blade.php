@@ -4,14 +4,16 @@
     </vs-col>
     <vs-col vs-w="8" vs-xs="7">
        <ValidationProvider tag="div" rules="{{$required}}{{isset($max) ? '|max:'.$max : ''}}" name="{{$label}}" v-slot="{ errors }">
-        <vs-select
-            autocomplete
-            class="selectExample"
-            v-model="model.{{$vmodel}}"
-        >
-            <vs-select-item :key="index" :value="item.value" :text="item.text" v-for="(item,index) in {{$vmodel}}Options" />
-        </vs-select>
-          <span class="text-danger d-block">@{{ errors[0] }}</span>
-      </ValidationProvider>
+            <select 
+                autocomplete 
+                class="b-select" 
+                v-model="model.{{$vmodel}}"
+            >
+                <option :key="index" :value="item.value" v-for="(item,index) in {{$vmodel}}Options" >
+                    @{{item.text}}
+                </option>
+            </select>
+            <span class="text-danger d-block">@{{ errors[0] }}</span>
+        </ValidationProvider>
     </vs-col>
 </vs-row>
