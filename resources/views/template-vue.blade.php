@@ -16,14 +16,10 @@
         <vs-divider />
         <GoodTable :model="dataModel" :columns="columns" ref="VueGT">
           <template slot-scope="{ VueGTprops }">
-            @foreach ($columns as $item)
-              @if ($item['type'] == 'switch')
-                  <vs-chip v-if="VueGTprops.column.field == 'activestat'" :color="VueGTprops.row.activestat == 1 ? 'success' : ''">
-                    <span v-if="VueGTprops.row.{{$item['column']}} == 1">Aktif</span>
-                    <span v-else="">Tidak Aktif</span>
-                  </vs-chip>
-              @endif
-            @endforeach
+            <vs-chip v-if="VueGTprops.column.switch" :color="VueGTprops.row[VueGTprops.column.field] == 1 ? 'success' : ''">
+              <span v-if="VueGTprops.row[VueGTprops.column.field] == 1">Aktif</span>
+              <span v-else="">Tidak Aktif</span>
+            </vs-chip>
           </template>
         </GoodTable>
         <vs-divider />
@@ -89,7 +85,11 @@ export default {
     
     columns: [
       @foreach ($columns as $item)
+        @if($item['type'] == 'switch')
+        { label : '{{$item['title']}}', field: '{{ Str::lower($item['column'])}}', switch: true},
+        @else
         { label : '{{$item['title']}}', field: '{{ Str::lower($item['column'])}}'},
+        @endif
       @endforeach
     ]
   }),

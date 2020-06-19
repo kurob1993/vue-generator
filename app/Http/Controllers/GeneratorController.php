@@ -110,7 +110,8 @@ class GeneratorController extends Controller
 
         $group = $data;
         if (isset($request->cari)) {
-            $data = $data->get($request->cari)->mapToGroups(function($item, $key) use($request) {
+            $data = collect($data->get($request->cari))
+            ->mapToGroups(function($item, $key) use($request) {
                 return [$request->cari => $item];
             });
         }
