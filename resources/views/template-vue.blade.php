@@ -100,10 +100,10 @@ export default {
     */
     newData() {
       @foreach ($columns as $item)
-      @if($item['disabled'])
-      this.{{$item['column']}}ReadOnly = false;
-      @endif
-      this.model.{{$item['column']}} = {{ $item['type'] == "switch" ? "0" : ""}}
+        @if($item['disabled'])
+          this.{{$item['column']}}ReadOnly = false;
+        @endif
+        this.model.{{$item['column']}} = "{{ $item['type'] == 'switch' ? 0 : '' }}";
       @endforeach
       this.isNew = true;
       this.popupTitle = "TAMBAH " + this.title;
