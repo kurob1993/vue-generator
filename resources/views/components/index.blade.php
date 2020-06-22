@@ -6,7 +6,7 @@
          'placeholder' => Str::upper($title),
          'required' => $required,
          'max' => $max,
-         'disabled' => $disabled ? true : false
+         'pk' => $pk ? true : false
       ])
       @endtext
       @break
@@ -18,7 +18,7 @@
          'placeholder' => Str::upper($title),
          'required' => $required,
          'max' => $max,
-         'disabled' => $disabled ? true : false
+         'pk' => $pk ? true : false
       ])
       @endselect
       @break
@@ -29,7 +29,7 @@
          'vmodel' => $column,
          'required' => $required,
          'max' => $max,
-         'disabled' => $disabled ? true : false
+         'pk' => $pk ? true : false
       ])
       @endtextarea
       @break
@@ -40,7 +40,7 @@
          'vmodel' => $column,
          'required' => $required,
          'max' => $max,
-         'disabled' => $disabled ? true : false
+         'pk' => $pk ? true : false
       ])
       @endswitchInput
       @break
@@ -51,7 +51,7 @@
          'vmodel' => $column,
          'required' => $required,
          'max' => $max,
-         'disabled' => $disabled ? true : false
+         'pk' => $pk ? true : false
       ])
       @endnumber
       @break
@@ -62,7 +62,7 @@
          'vmodel' => $column,
          'required' => $required,
          'max' => $max,
-         'disabled' => $disabled ? true : false
+         'pk' => $pk ? true : false
       ])
       @endtextNumber
       @break
@@ -73,7 +73,7 @@
          'vmodel' => $column,
          'required' => $required,
          'max' => $max,
-         'disabled' => $disabled ? true : false
+         'pk' => $pk ? true : false
       ])
       @enddate
       @break
@@ -85,7 +85,7 @@
          'placeholder' => '',
          'required' => $required,
          'max' => $max,
-         'disabled' => $disabled ? true : false
+         'pk' => $pk ? true : false
       ])
       @endtext
       

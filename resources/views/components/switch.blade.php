@@ -8,7 +8,7 @@
                 type="button"
                 color="success" 
                 v-model="{{ $vmodel }}Switch" 
-                @if ($disabled)
+                @if ($pk)
                 :disabled='{{$vmodel}}ReadOnly'
                 @endif
             >

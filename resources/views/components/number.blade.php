@@ -10,7 +10,7 @@
             min="0" 
             max="999999999" 
             :step="1" 
-            @if ($disabled)
+            @if ($pk)
             :disabled='{{$vmodel}}ReadOnly'
             @endif
          />

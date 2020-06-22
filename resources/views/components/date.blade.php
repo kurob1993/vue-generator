@@ -9,7 +9,7 @@
                 class="inputx" 
                 v-model="model.{{$vmodel}}" 
                 id="{{$vmodel}}" 
-                @if ($disabled)
+                @if ($pk)
                 :disabled='{{$vmodel}}ReadOnly'
                 @endif
             />

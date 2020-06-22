@@ -10,7 +10,7 @@
             v-model="model.{{$vmodel}}" 
             id="{{$vmodel}}" 
             placeholder="{{isset($placeholder) ? $placeholder : ''}}"
-            @if ($disabled)
+            @if ($pk)
             :disabled='{{$vmodel}}ReadOnly'
             @endif
          />

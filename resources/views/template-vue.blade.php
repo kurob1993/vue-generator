@@ -70,7 +70,7 @@ export default {
     isNew: true,
     popup: false,
     @foreach ($columns as $item)
-      @if($item['disabled'])
+      @if($item['pk'])
       {{$item['column']}}ReadOnly: false,
       @endif
 
@@ -100,7 +100,7 @@ export default {
     */
     newData() {
       @foreach ($columns as $item)
-        @if($item['disabled'])
+        @if($item['pk'])
           this.{{$item['column']}}ReadOnly = false;
         @endif
         this.model.{{$item['column']}} = "{{ $item['type'] == 'switch' ? 0 : '' }}";
@@ -128,12 +128,16 @@ export default {
       
       this.$vs.loading({ container: '#edit-with-loading', scale: 0.5 })
 
-      let id = selected[0].{{$columns[0]['column']}};
+      @foreach ($columns as $item)
+        @if($item['pk'])
+          let {{$item['column']}} = selected[0].{{$item['column']}};
+        @endif
+      @endforeach
       let {{ $table }} = new {{ Str::title($table) }}();
-      let getById = await {{ $table }}.getById(id);
+      let getById = await {{ $table }}.getById(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach);
       if (getById.success) {
         @foreach ($columns as $item)
-          @if($item['disabled'])
+          @if($item['pk'])
             this.{{$item['column']}}ReadOnly = true;
           @endif
           this.model.{{$item['column']}} = getById.data.{{$item['column']}};
@@ -195,8 +199,13 @@ export default {
     actDelete() {
       this.$refs.VueGT.$refs.table.selectedRows.forEach(async row =>  {
         this.$vs.loading({ container: '#delete-with-loading', scale: 0.5 });
-        let id = row.{{$columns[0]['column']}};
-        let hapus = await this.model.delete(id);
+
+        @foreach ($columns as $item)
+        @if($item['pk'])
+            let {{$item['column']}} = row.{{$item['column']}};
+          @endif
+        @endforeach
+        let hapus = await this.model.delete(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach);
         if (hapus.success) {
           this.notify = { text: 'Sukses', color: 'success', icon: 'done' };
         }else{

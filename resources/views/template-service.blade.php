@@ -27,16 +27,16 @@ class {{ Str::title($table) }} {
     return this.service('post', API_URL, data);
   }
 
-  put(data) {
-    return this.service('put', API_URL, data);
+  put(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach, data) {
+    return this.service('put', API_URL @foreach ($columns as $key => $item) @if($item['pk']) + '/' + {{ $item['column'] }} @endif @endforeach, data);
   }
 
-  delete(id) {
-    return this.service('delete', API_URL + '/' + id);
+  delete(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach) {
+    return this.service('delete', API_URL @foreach ($columns as $key => $item) @if($item['pk']) + '/' + {{ $item['column'] }} @endif @endforeach);
   }
 
-  getById(id) {
-    return this.service('get', API_URL + '/' + id);
+  getById(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach) {
+    return this.service('get', API_URL @foreach ($columns as $key => $item) @if($item['pk']) + '/' + {{ $item['column'] }} @endif @endforeach);
   }
 }
 

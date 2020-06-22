@@ -7,7 +7,7 @@
             <vs-textarea 
                 v-model="model.{{$vmodel}}" 
                 id="{{$vmodel}}" 
-                @if ($disabled)
+                @if ($pk)
                 :disabled='{{$vmodel}}ReadOnly'
                 @endif
             />

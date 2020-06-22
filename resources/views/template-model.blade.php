@@ -20,18 +20,23 @@ export default class {{ Str::title($table) }} {
   }
 
   async put() {
-    return await {{ Str::title($table) }}Service.put({
-      @foreach ($columns as $item)
+    return await {{ Str::title($table) }}Service.put(
+      @foreach ($columns as $key => $item) @if($item['pk']) 
+      this.{{$item['column'] }},
+      @endif @endforeach
+      {
+        @foreach ($columns as $item)
           {{$item['column']}}: this.{{$item['column']}},
-      @endforeach
-    });
+        @endforeach
+      }
+    );
   }
 
-  async delete(id) {
-    return await {{ Str::title($table) }}Service.delete(id);
+  async delete(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach) {
+    return await {{ Str::title($table) }}Service.delete(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach);
   }
 
-  async getById(id) {
-    return await {{ Str::title($table) }}Service.getById(id);
+  async getById(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach) {
+    return await {{ Str::title($table) }}Service.getById(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach);
   }
 }
