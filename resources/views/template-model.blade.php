@@ -1,4 +1,4 @@
-import {{ Str::title($table) }}Service from '@/services/{{ Str::limit($table,4,'') }}/{{ Str::lower($table) }}.service';
+import {{ Str::title($table) }}Service from '@/services/{{ Str::limit($table,2,'') }}/{{ Str::lower($table) }}.service';
 
 export default class {{ Str::title($table) }} {
   constructor(@foreach ($columns as $key  => $item) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endforeach) {

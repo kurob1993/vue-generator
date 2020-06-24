@@ -12,6 +12,13 @@
                      @csrf
                      <table class="table table-bordered table-striped table-hover">
                         <tr>
+                           <td>Target Lokasi Folder</td>
+                           <td>:</td>
+                           <td>
+                              <input type="text" name="folder" class="form-control" value="{{ $folder }}" readonly>
+                           </td>
+                        </tr>
+                        <tr>
                            <td>Table</td>
                            <td>:</td>
                            <td>

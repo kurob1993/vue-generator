@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 
 class GeneratorController extends Controller
 {
@@ -20,6 +21,7 @@ class GeneratorController extends Controller
     public function getTableColumns(Request $request)
     {
         $databaseName = Config::get('database.connections.' . Config::get('database.default'));
+        $folder = $request->folder;
         $table = $request->table;
         $title = $request->title;
         $endpoint = $request->endpoint;
@@ -42,7 +44,7 @@ class GeneratorController extends Controller
                 'pk' => $item->COLUMN_KEY !== "" ? true : false
             ];
         });
-        return view('forms', compact('columns', 'table', 'title', 'endpoint'));
+        return view('forms', compact('columns', 'table', 'title', 'endpoint', 'folder'));
     }
 
     public function generate(Request $request)
@@ -60,32 +62,64 @@ class GeneratorController extends Controller
             ];
         });
 
+        $folder = $request->folder;
         $table = $request->table;
         $title = $request->titleHeader;
         $endpoint = $request->endpoint;
-        
+        $module = Str::limit($table,2,'');
+
         foreach ($columns as $key => $value) {
             if ($value['type'] == 'select') {
                 Storage::put(
-                    'public/generator/' . $table . '/model/' . $value['column'] . '.js',
+                    'public/generator/' . $module . '/model/' . $value['column'] . '.js',
                     view('template-data-select', compact('columns', 'table', 'title','endpoint'))->render()
                 );
+
+                $file = base_path('storage\app\public\generator\\' . $module . '\model\\'.$value['column'].'.js');
+                $dir = $folder.'\src\models\\' . $module;
+                $local = $dir.'\\'.$value['column'] . '.js';
+                if (!file_exists($dir)) {
+                    mkdir(dirname($local), 0777, true);
+                }
+                copy($file, $local);
             }
         }
-        Storage::put(
-            'public/generator/' . $table . '/page/' . $table . '.vue',
-            view('template-vue', compact('columns', 'table', 'title','endpoint'))->render()
-        );
 
         Storage::put(
-            'public/generator/' . $table . '/model/' . $table . '.js',
+            'public/generator/' . $module . '/page/' . $table . '.vue',
+            view('template-vue', compact('columns', 'table', 'title','endpoint'))->render()
+        );
+        $file = base_path('storage\app\public\generator\\' . $module . '\page\\'.$table.'.vue');
+        $dir = $folder.'\src\views\pages\\' . $module;
+        $local = $dir . '\\'.$table . '.vue';
+        if (!file_exists($dir)) {
+            mkdir(dirname($local), 0777, true);
+        }
+        copy($file, $local);
+
+        Storage::put(
+            'public/generator/' . $module . '/model/' . $table . '.js',
             view('template-model', compact('columns', 'table', 'title','endpoint'))->render()
         );
-        
+        $file = base_path('storage\app\public\generator\\' . $module . '\model\\'.$table.'.js');
+        $dir = $folder.'\src\models\\' . $module;
+        $local = $dir . '\\'.$table . '.js';
+        if (!file_exists($dir)) {
+            mkdir(dirname($local), 0777, true);
+        }
+        copy($file, $local);
+
         Storage::put(
-            'public/generator/' . $table . '/service/' . $table . '.service.js',
+            'public/generator/' . $module . '/service/' . $table . '.service.js',
             view('template-service', compact('columns', 'table', 'title','endpoint'))->render()
         );
+        $file = base_path('storage\app\public\generator\\' . $module . '\service\\'.$table.'.service.js');
+        $dir = $folder.'\src\services\\' . $module;
+        $local = $dir .'\\'.$table . '.service.js';
+        if (!file_exists($dir)) {
+            mkdir(dirname($local), 0777, true);
+        }
+        copy($file, $local);
 
         return redirect()->route('generator.files');
     }

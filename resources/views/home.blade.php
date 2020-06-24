@@ -17,6 +17,12 @@
 
                     <form action="{{ route('columnsTable') }}" method="POST">
                         @csrf
+                        <label for="title">Target Lokasi Folder</label>
+                        <input type="text" name="folder" id="folder" class="form-control my-2" 
+                            placeholder="D:\CODE\khs-frontend-new" 
+                            required
+                            onkeyup="set(this.value)">
+
                         <label for="table">Pilih Table</label>
                         <select name="table" id="table" class="form-control my-2 js-example-basic-single" required>
                             @foreach ($tables as $table)
@@ -44,10 +50,15 @@
 
 @push('script')
 <script>
-   $(document).ready(function() {
-      $('.js-example-basic-single').select2({
-         theme: "bootstrap"
-      });
-   });
+    $(document).ready(function() {
+        $('.js-example-basic-single').select2({
+            theme: "bootstrap"
+        });
+        $('#folder').val(localStorage.getItem('folder'));
+    });
+
+    function set(val) {
+        localStorage.setItem('folder', val);
+    }
 </script>
 @endpush

@@ -47,10 +47,10 @@
 </template>
 
 <script>
-import {{Str::title($table)}} from '@/models/{{Str::limit($table,4,'')}}/{{$table}}'
+import {{Str::title($table)}} from '@/models/{{Str::limit($table,2,'')}}/{{$table}}'
 @foreach ($columns as $item)
   @if($item['type'] == 'select')
-  import {{Str::limit(Str::title($table),4,'')}}{{$item['column']}} from '@/models/{{Str::limit($table,4,'')}}/{{$item['column']}}'
+  import {{Str::limit(Str::title($table),4,'')}}{{$item['column']}} from '@/models/{{Str::limit($table,2,'')}}/{{$item['column']}}'
   @endif
 @endforeach
 import GoodTable from '@/components/GoodTable';
