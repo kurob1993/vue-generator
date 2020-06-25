@@ -140,8 +140,8 @@ export default {
           @if($item['pk'])
             this.{{$item['column']}}ReadOnly = true;
           @endif
+          this.model.{{$item['column']}} = getById.data.{{$item['column']}};
         @endforeach
-        this.model = getById.data;
         this.isNew = false;
         this.popupTitle = 'UBAH ' + this.title;
         this.popup = true;
