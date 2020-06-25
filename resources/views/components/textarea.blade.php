@@ -10,6 +10,7 @@
                 @if ($pk)
                 :disabled='{{$vmodel}}ReadOnly'
                 @endif
+                style="width: 70%"
             />
             <span class="text-danger d-block">@{{ errors[0] }}</span>
         </ValidationProvider>
