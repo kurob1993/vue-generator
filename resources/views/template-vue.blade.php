@@ -103,7 +103,7 @@ export default {
         @if($item['pk'])
           this.{{$item['column']}}ReadOnly = false;
         @endif
-        this.model.{{$item['column']}} = "{{ $item['type'] == 'switch' ? 0 : '' }}";
+        this.model.{{$item['column']}} = "{{ $item['type'] == 'switch' ? 1 : '' }}";
       @endforeach
       this.isNew = true;
       this.popupTitle = "TAMBAH " + this.title;

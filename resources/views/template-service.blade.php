@@ -38,6 +38,10 @@ class {{ Str::title($table) }} {
   getById(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach) {
     return this.service('get', API_URL @foreach ($columns as $key => $item) @if($item['pk']) + '/' + {{ $item['column'] }} @endif @endforeach);
   }
+
+  getList() {
+    return this.service('get', API_URL + '/getlist');
+  }
 }
 
 export default new {{ Str::title($table) }}();

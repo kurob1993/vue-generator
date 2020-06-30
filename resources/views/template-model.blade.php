@@ -39,4 +39,12 @@ export default class {{ Str::title($table) }} {
   async getById(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach) {
     return await {{ Str::title($table) }}Service.getById(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach);
   }
+
+  async getList() {
+    let list = await {{ Str::title($table) }}Service.getList();
+    return list.data.map(function(row) {
+      let data = Object.values(row);
+      return { value: data[0], text: data[1] };
+    });
+  }
 }
