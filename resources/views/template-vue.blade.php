@@ -7,7 +7,7 @@
             <h4 class="card-title d-flex">@{{ title }}</h4>
           </vs-col>
           <vs-col vs-type="flex" :vs-justify="this.justifyButton" vs-align="center" vs-lg="6" vs-xs="12" >
-            <vs-button color="primary" type="filled" icon="add" size="small" class="mx-1" @click="newData()" >TAMBAH</vs-button>
+            <vs-button id="add-with-loading" color="primary" type="filled" icon="add" size="small" class="vs-con-loading__container mx-1" @click="newData()" >TAMBAH</vs-button>
             <vs-button id="edit-with-loading" color="warning" type="filled" icon="edit" size="small" class="vs-con-loading__container mx-1" @click="editData()" >UBAH</vs-button>
             <vs-button id="delete-with-loading" color="danger" type="filled" icon="delete" size="small" class="vs-con-loading__container mx-1" @click="deleteData()" >HAPUS</vs-button>
           </vs-col>
@@ -49,7 +49,7 @@
 <script>
 import {{Str::title($table)}} from '@/models/{{Str::limit($table,2,'')}}/{{$table}}'
 @foreach ($relasional as $item)
-import {{ Str::title($item) }} from '@/models/{{Str::limit($table,2,'')}}/{{$item}}'
+import {{ Str::title( explode('|',$item)[1] ) }} from '@/models/{{Str::limit($table,2,'')}}/{{explode('|',$item)[1]}}'
 @endforeach
 import GoodTable from '@/components/GoodTable';
 
@@ -75,15 +75,15 @@ export default {
     isNew: true,
     popup: false,
     @foreach ($columns as $item)
-      @if($item['pk'])
-      {{$item['column']}}ReadOnly: false,
-      @endif
-
-      @if($item['type'] == 'select')
-      {{$item['column']}}Options: {{Str::limit(Str::title($table),4,'')}}{{$item['column']}}.data,
-      @endif
+    @if($item['pk'])
+    {{$item['column']}}ReadOnly: false,
+    @endif
     @endforeach
     
+    @foreach ($relasional as $item)
+    {{explode('|',$item)[0]}}Options: [],
+    @endforeach
+
     justifyTitle: "flex-start",
     justifyButton: "flex-end",
     window: { width: 0, height: 0 },   
@@ -99,11 +99,28 @@ export default {
     ]
   }),
   methods: {    
+    @if(count($relasional) > 0)
+    /*
+     * @setOption() : Mengeset nilai komponen select option
+     *
+     */
+     async setOption() {
+      @foreach ($relasional as $item)
+      this.{{explode('|',$item)[0]}}Options = await new {{Str::title(explode('|',$item)[1])}}().getList();
+      @endforeach
+    },
+    @endif
     /*
     * @newData() : inisialisasi data untuk membuat data baru
     *
     */
-    newData() {
+    {{count($relasional) ? 'async' : ''}} newData() {
+      @if(count($relasional))
+      this.$vs.loading({ container: '#add-with-loading', scale: 0.5 });
+      @endif
+      @if(count($relasional) > 0)
+      await this.setOption();
+      @endif
       @foreach ($columns as $item)
         @if($item['pk'])
           this.{{$item['column']}}ReadOnly = false;
@@ -113,6 +130,9 @@ export default {
       this.isNew = true;
       this.popupTitle = "TAMBAH " + this.title;
       this.popup = true;
+      @if(count($relasional))
+      this.$vs.loading.close('#add-with-loading > .con-vs-loading');
+      @endif
     },
 
     /*

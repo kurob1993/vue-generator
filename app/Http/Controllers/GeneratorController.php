@@ -83,13 +83,20 @@ class GeneratorController extends Controller
         $endpoint = $request->endpoint;
         $module = Str::limit($table,2,'');
         
+        $relasional = $columns->reject(function ($value, $key) {
+            return $value['relasi'] == null;
+        })->map(function ($value, $key) {
+            return $this->isJson($value['relasi']) ? $value['column'].'|'.$value['column'] : $value['column'].'|'.$value['relasi'];
+        });
+        // dd($relasional);
         // generate model static
         foreach ($columns as $key => $value) {
             if ( $this->isJson($value['relasi']) ) {
+                $column = $value['column'];
                 $relasi = json_decode($value['relasi'], true);
                 Storage::put(
                     'public/generator/' . $module . '/model/' . $value['column'] . '.js',
-                    view('template-data-select', compact('columns', 'table', 'title','endpoint', 'relasi'))->render()
+                    view('template-data-select', compact('column', 'table', 'title','endpoint', 'relasi'))->render()
                 );
                 $file = base_path('storage\app\public\generator\\' . $module . '\model\\'.$value['column'].'.js');
                 $dir = $folder.'\src\models\\' . $module;
@@ -101,13 +108,7 @@ class GeneratorController extends Controller
             }
         }
         // generate model static
-
-        $relasional = $columns->reject(function ($value, $key) {
-            return $value['relasi'] == null;
-        })->map(function ($value, $key) {
-            return $this->isJson($value['relasi']) ? $value['column'] : $value['relasi'];
-        });
-
+        
         Storage::put(
             'public/generator/' . $module . '/page/' . $table . '.vue',
             view('template-vue', compact('columns', 'table', 'title','endpoint', 'relasional'))->render()
