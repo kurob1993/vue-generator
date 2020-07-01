@@ -48,12 +48,17 @@
 
 <script>
 import {{Str::title($table)}} from '@/models/{{Str::limit($table,2,'')}}/{{$table}}'
-@foreach ($columns as $item)
-  @if($item['type'] == 'select')
-  import {{Str::limit(Str::title($table),4,'')}}{{$item['column']}} from '@/models/{{Str::limit($table,2,'')}}/{{$item['column']}}'
-  @endif
+@foreach ($relasional as $item)
+import {{ Str::title($item) }} from '@/models/{{Str::limit($table,2,'')}}/{{$item}}'
 @endforeach
 import GoodTable from '@/components/GoodTable';
+
+@php($pk = [])
+@foreach ($columns as $key => $item) 
+@if($item['pk']) 
+@php($pk[] = $item['column'])
+@endif 
+@endforeach
 
 export default {
   name: "{{$table}}",
@@ -129,12 +134,11 @@ export default {
       this.$vs.loading({ container: '#edit-with-loading', scale: 0.5 })
 
       @foreach ($columns as $item)
-        @if($item['pk'])
-          let {{$item['column']}} = selected[0].{{$item['column']}};
-        @endif
+        @if($item['pk']) let {{$item['column']}} = selected[0].{{$item['column']}}; @endif
       @endforeach
       let {{ $table }} = new {{ Str::title($table) }}();
-      let getById = await {{ $table }}.getById(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach);
+      let getById = await {{ $table }}.getById({{ implode(",",$pk) }});
+
       if (getById.success) {
         @foreach ($columns as $item)
           @if($item['pk'])
@@ -205,7 +209,7 @@ export default {
             let {{$item['column']}} = row.{{$item['column']}};
           @endif
         @endforeach
-        let hapus = await this.model.delete(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach);
+        let hapus = await this.model.delete({{ implode(",",$pk) }});
         if (hapus.success) {
           this.notify = { text: 'Sukses', color: 'success', icon: 'done' };
         }else{

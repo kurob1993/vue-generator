@@ -1,3 +1,10 @@
+@php($pk = [])
+@foreach ($columns as $key => $item) 
+@if($item['pk']) 
+@php($pk[] = $item['column'])
+@endif 
+@endforeach
+
 import axios from 'axios';
 import authHeader from '../auth-header';
 
@@ -27,15 +34,15 @@ class {{ Str::title($table) }} {
     return this.service('post', API_URL, data);
   }
 
-  put(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach, data) {
+  put({{ implode(",",$pk) }}, data) {
     return this.service('put', API_URL @foreach ($columns as $key => $item) @if($item['pk']) + '/' + {{ $item['column'] }} @endif @endforeach, data);
   }
 
-  delete(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach) {
+  delete({{ implode(",",$pk) }}) {
     return this.service('delete', API_URL @foreach ($columns as $key => $item) @if($item['pk']) + '/' + {{ $item['column'] }} @endif @endforeach);
   }
 
-  getById(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach) {
+  getById({{ implode(",",$pk) }}) {
     return this.service('get', API_URL @foreach ($columns as $key => $item) @if($item['pk']) + '/' + {{ $item['column'] }} @endif @endforeach);
   }
 

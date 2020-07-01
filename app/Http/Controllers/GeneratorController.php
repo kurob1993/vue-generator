@@ -26,22 +26,36 @@ class GeneratorController extends Controller
         $title = $request->title;
         $endpoint = $request->endpoint;
         $nameOfTable = $columns = DB::select(DB::raw("
-            select 
-                * 
-            from 
-                INFORMATION_SCHEMA.COLUMNS 
-            where TABLE_NAME='" . $table . "' and 
-            TABLE_SCHEMA ='" . $databaseName['database'] . "'
+            select
+                a.TABLE_NAME,
+                a.COLUMN_NAME,
+                a.DATA_TYPE,
+                a.IS_NULLABLE,
+                a.CHARACTER_MAXIMUM_LENGTH,
+                a.CHARACTER_MAXIMUM_LENGTH,
+                a.COLUMN_KEY,
+                b.REFERENCED_TABLE_NAME
+            from
+                INFORMATION_SCHEMA.columns as a
+                left join INFORMATION_SCHEMA.KEY_COLUMN_USAGE as b
+                on b.COLUMN_NAME = a.COLUMN_NAME and 
+                b.CONSTRAINT_SCHEMA = '" . $databaseName['database'] . "' and 
+                b.TABLE_NAME = '" . $table . "' and 
+                b.CONSTRAINT_NAME <> 'PRIMARY' and 
+                b.COLUMN_NAME <> 'companyid'
+            where
+                a.TABLE_NAME = '" . $table . "'
+                and a.TABLE_SCHEMA = '" . $databaseName['database'] . "'
         "));
-
         $columns = collect($nameOfTable);
         $columns->transform(function ($item, $key) use ($table) {
             return [
                 'column' => str_replace("_","", $item->COLUMN_NAME),
-                'type' => $this->convert($item->DATA_TYPE),
+                'type' => $this->convert($item),
                 'required' => $this->isNullable($item->IS_NULLABLE),
                 'max' => $item->CHARACTER_MAXIMUM_LENGTH,
-                'pk' => $item->COLUMN_KEY !== "" ? true : false
+                'pk' => $item->COLUMN_KEY == "PRI" ? true : false,
+                'relasi' => $item->REFERENCED_TABLE_NAME
             ];
         });
         return view('forms', compact('columns', 'table', 'title', 'endpoint', 'folder'));
@@ -58,7 +72,8 @@ class GeneratorController extends Controller
                 'required' => $request->required[$key],
                 'title' => $request->title[$key],
                 'max' => $request->max[$key],
-                'pk' => $request->pk[$key]
+                'pk' => $request->pk[$key],
+                'relasi' => $request->relasi[$key]
             ];
         });
 
@@ -67,14 +82,15 @@ class GeneratorController extends Controller
         $title = $request->titleHeader;
         $endpoint = $request->endpoint;
         $module = Str::limit($table,2,'');
-
+        
+        // generate model static
         foreach ($columns as $key => $value) {
-            if ($value['type'] == 'select') {
+            if ( $this->isJson($value['relasi']) ) {
+                $relasi = json_decode($value['relasi'], true);
                 Storage::put(
                     'public/generator/' . $module . '/model/' . $value['column'] . '.js',
-                    view('template-data-select', compact('columns', 'table', 'title','endpoint'))->render()
+                    view('template-data-select', compact('columns', 'table', 'title','endpoint', 'relasi'))->render()
                 );
-
                 $file = base_path('storage\app\public\generator\\' . $module . '\model\\'.$value['column'].'.js');
                 $dir = $folder.'\src\models\\' . $module;
                 $local = $dir.'\\'.$value['column'] . '.js';
@@ -84,10 +100,17 @@ class GeneratorController extends Controller
                 copy($file, $local);
             }
         }
+        // generate model static
+
+        $relasional = $columns->reject(function ($value, $key) {
+            return $value['relasi'] == null;
+        })->map(function ($value, $key) {
+            return $this->isJson($value['relasi']) ? $value['column'] : $value['relasi'];
+        });
 
         Storage::put(
             'public/generator/' . $module . '/page/' . $table . '.vue',
-            view('template-vue', compact('columns', 'table', 'title','endpoint'))->render()
+            view('template-vue', compact('columns', 'table', 'title','endpoint', 'relasional'))->render()
         );
         $file = base_path('storage\app\public\generator\\' . $module . '\page\\'.$table.'.vue');
         $dir = $folder.'\src\views\pages\\' . $module;
@@ -162,7 +185,8 @@ class GeneratorController extends Controller
 
     public function convert($data)
     {
-        switch ($data) {
+        $data_type = $data->REFERENCED_TABLE_NAME ? 'select' : $data->DATA_TYPE;
+        switch ($data_type) {
 
             case 'tinyint':
             case 'smallint':
@@ -209,9 +233,18 @@ class GeneratorController extends Controller
                 return 'time';
                 break;
 
+            case 'select':
+                return 'select';
+                break;
+
             default:
                 return 'text';
                 break;
         }
+    }
+
+    public function isJson($string) {
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
     }
 }

@@ -49,8 +49,7 @@
                                     <th width="10%">Column</th>
                                     <th width="5%">:</th>
                                     <th>
-                                       <input type="text" class="form-control" name="column[]" readonly
-                                          placeholder="column" value="{{ $item['column'] }}">
+                                       <input type="text" class="form-control" name="column[]" readonly value="{{ $item['column'] }}">
                                     </th>
                                  </tr>
                               </thead>
@@ -66,8 +65,7 @@
                                     <td width="10%">title</td>
                                     <td width="5%">:</td>
                                     <td>
-                                       <input type="text" class="form-control" name="title[]"
-                                          placeholder="Title" value="{{ $item['column'] }}">
+                                       <input type="text" class="form-control" name="title[]" value="{{ $item['column'] }}">
                                     </td>
                                  </tr>
                                  <tr>
@@ -86,19 +84,28 @@
                                     </td>
                                  </tr>
                                  <tr>
+                                    <td width="10%">Relasi</td>
+                                    <td width="5%">:</td>
+                                    <td>
+                                       <input type="text" class="form-control" name="relasi[]" value="{{ $item['relasi'] }}">
+                                       <label for="" class="text-danger">* Unutk Component Select, 
+                                          Jika Akan Menggunakan Data Static isi dengan data JSON 
+                                          contoh: <br>
+                                          [{ "value": "1", "text": "Nama Mobil" }, { "value": "2", "text": "Nama Hewan" }] </label>
+                                    </td>
+                                 </tr>
+                                 <tr>
                                     <td width="10%">Required</td>
                                     <td width="5%">:</td>
                                     <td>
-                                       <input type="text" class="form-control" name="required[]" 
-                                          placeholder="Title" value="{{ $item['required'] }}">
+                                       <input type="text" class="form-control" name="required[]" value="{{ $item['required'] }}">
                                     </td>
                                  </tr>
                                  <tr>
                                     <td width="10%">Max Char</td>
                                     <td width="5%">:</td>
                                     <td>
-                                       <input type="text" class="form-control" name="max[]" 
-                                          placeholder="Max Character" value="{{ $item['max'] }}">
+                                       <input type="text" class="form-control" name="max[]" value="{{ $item['max'] }}">
                                     </td>
                                  </tr>
                               </tbody>

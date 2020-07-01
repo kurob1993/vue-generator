@@ -1,6 +1,7 @@
 export default {
     data: [
-        {text: 'Test1', value: 1},
-        {text: 'Test2', value: 2}
+    @foreach ($relasi as $key => $item)
+        {value: '{{$item['value']}}', text: '{{$item['text']}}' }{{ count($relasi)-1 !== $key ? ',' : ''}}
+    @endforeach
     ]
 }

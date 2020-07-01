@@ -1,3 +1,10 @@
+@php($pk = [])
+@foreach ($columns as $key => $item) 
+@if($item['pk']) 
+@php($pk[] = $item['column'])
+@endif 
+@endforeach
+
 import {{ Str::title($table) }}Service from '@/services/{{ Str::limit($table,2,'') }}/{{ Str::lower($table) }}.service';
 
 export default class {{ Str::title($table) }} {
@@ -32,12 +39,12 @@ export default class {{ Str::title($table) }} {
     );
   }
 
-  async delete(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach) {
-    return await {{ Str::title($table) }}Service.delete(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach);
+  async delete({{ implode(",",$pk) }}) {
+    return await {{ Str::title($table) }}Service.delete({{ implode(",",$pk) }});
   }
 
-  async getById(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach) {
-    return await {{ Str::title($table) }}Service.getById(@foreach ($columns as $key => $item) @if($item['pk']) {{ ($key == 0 ? '' : ',') . $item['column'] }} @endif @endforeach);
+  async getById({{ implode(",",$pk) }}) {
+    return await {{ Str::title($table) }}Service.getById({{ implode(",",$pk) }});
   }
 
   async getList() {
