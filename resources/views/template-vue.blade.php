@@ -152,7 +152,9 @@ export default {
       }
       
       this.$vs.loading({ container: '#edit-with-loading', scale: 0.5 })
-
+      @if(count($relasional) > 0)
+      await this.setOption();
+      @endif
       @foreach ($columns as $item)
         @if($item['pk']) let {{$item['column']}} = selected[0].{{$item['column']}}; @endif
       @endforeach
