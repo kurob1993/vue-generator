@@ -46,6 +46,7 @@ class GeneratorController extends Controller
             where
                 a.TABLE_NAME = '" . $table . "'
                 and a.TABLE_SCHEMA = '" . $databaseName['database'] . "'
+            order by a.ORDINAL_POSITION asc
         "));
         $columns = collect($nameOfTable);
         $columns->transform(function ($item, $key) use ($table) {
