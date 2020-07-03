@@ -24,7 +24,7 @@
                             onkeyup="set(this.value)">
 
                         <label for="table">Pilih Table</label>
-                        <select name="table" id="table" class="form-control my-2 js-example-basic-single" required>
+                        <select name="table" id="table" class="form-control my-2 js-example-basic-single" onchange="api(this.value)" required>
                             @foreach ($tables as $table)
                                 @foreach ($table as $key => $value)
                                 <option value="{{$value}}">{{$value}}</option>
@@ -59,6 +59,11 @@
 
     function set(val) {
         localStorage.setItem('folder', val);
+    }
+
+    function api(params){
+        let endpoint = $('#endpoint').val();
+        $('#endpoint').val('api/v1/'+params.substring(0, 2)+'/'+params);
     }
 </script>
 @endpush
