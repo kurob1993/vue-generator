@@ -29,6 +29,7 @@ class GeneratorController extends Controller
             select
                 a.TABLE_NAME,
                 a.COLUMN_NAME,
+                a.COLUMN_COMMENT,
                 a.DATA_TYPE,
                 a.IS_NULLABLE,
                 a.CHARACTER_MAXIMUM_LENGTH,
@@ -52,6 +53,7 @@ class GeneratorController extends Controller
         $columns->transform(function ($item, $key) use ($table) {
             return [
                 'column' => str_replace("_","", $item->COLUMN_NAME),
+                'title' => $item->COLUMN_COMMENT ? $item->COLUMN_COMMENT : str_replace("_","", $item->COLUMN_NAME),
                 'type' => $this->convert($item),
                 'required' => $this->isNullable($item->IS_NULLABLE),
                 'max' => $item->CHARACTER_MAXIMUM_LENGTH,

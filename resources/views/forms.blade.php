@@ -76,7 +76,7 @@
                                           <td width="10%">title</td>
                                           <td width="5%">:</td>
                                           <td>
-                                             <input type="text" class="form-control" name="title[]" value="{{ $item['column'] }}">
+                                             <input type="text" class="form-control" name="title[]" value="{{ $item['title'] }}">
                                           </td>
                                        </tr>
                                        <tr>
