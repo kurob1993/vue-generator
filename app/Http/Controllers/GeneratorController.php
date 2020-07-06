@@ -88,8 +88,10 @@ class GeneratorController extends Controller
         
         $relasional = $columns->reject(function ($value, $key) {
             return $value['relasi'] == null;
-        })->map(function ($value, $key) {
-            return $this->isJson($value['relasi']) ? $value['column'].'|'.$value['column'] : $value['column'].'|'.$value['relasi'];
+        })->map(function ($value, $key) use($table) {
+            return $this->isJson($value['relasi']) ? 
+                $value['column'].'|'.Str::title($table).Str::title($value['column']) : 
+                $value['column'].'|'.Str::title($value['relasi']);
         });
         // dd($relasional);
         // generate model static
@@ -98,12 +100,12 @@ class GeneratorController extends Controller
                 $column = $value['column'];
                 $relasi = json_decode($value['relasi'], true);
                 Storage::put(
-                    'public/generator/' . $module . '/model/' . $value['column'] . '.js',
+                    'public/generator/' . $module . '/model/' . Str::title($table).Str::title($value['column']) . '.js',
                     view('template-data-select', compact('column', 'table', 'title','endpoint', 'relasi'))->render()
                 );
-                $file = base_path('storage\app\public\generator\\' . $module . '\model\\'.$value['column'].'.js');
+                $file = base_path('storage\app\public\generator\\' . $module . '\model\\'.Str::title($table).Str::title($value['column']).'.js');
                 $dir = $folder.'\src\models\\' . $module;
-                $local = $dir.'\\'.$value['column'] . '.js';
+                $local = $dir.'\\'.Str::title($table).Str::title($value['column']) . '.js';
                 if (!file_exists($dir)) {
                     mkdir(dirname($local), 0777, true);
                 }

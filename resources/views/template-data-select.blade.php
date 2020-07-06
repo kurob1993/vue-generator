@@ -1,4 +1,4 @@
-export default class {{ Str::title($column)}} {
+export default class {{ Str::title($table)}}{{ Str::title($column)}} {
     getList(){
         return [
         @foreach ($relasi as $key => $item)
