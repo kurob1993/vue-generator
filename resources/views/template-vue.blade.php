@@ -106,7 +106,7 @@ export default {
      */
      async setOption() {
       @foreach ($relasional as $item)
-      this.{{explode('|',$item)[0]}}Options = await new {{Str::title(explode('|',$item)[1])}}().getList();
+      this.{{explode('|',$item)[0]}}Options = await new {{explode('|',$item)[1]}}().getList();
       @endforeach
     },
     @endif
