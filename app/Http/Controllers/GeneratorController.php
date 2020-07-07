@@ -52,8 +52,8 @@ class GeneratorController extends Controller
         $columns = collect($nameOfTable);
         $columns->transform(function ($item, $key) use ($table) {
             return [
-                'column' => str_replace("_","", $item->COLUMN_NAME),
-                'title' => $item->COLUMN_COMMENT ? $item->COLUMN_COMMENT : str_replace("_","", $item->COLUMN_NAME),
+                'column' => Str::camel($item->COLUMN_NAME),
+                'title' => $item->COLUMN_COMMENT ? $item->COLUMN_COMMENT : Str::camel($item->COLUMN_NAME),
                 'type' => $this->convert($item),
                 'required' => $this->isNullable($item->IS_NULLABLE),
                 'max' => $item->CHARACTER_MAXIMUM_LENGTH,

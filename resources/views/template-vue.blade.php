@@ -91,9 +91,9 @@ export default {
     columns: [
       @foreach ($columns as $item)
         @if($item['type'] == 'switch')
-        { label : '{{$item['title']}}', field: '{{ Str::lower($item['column'])}}', switch: true},
+        { label : '{{$item['title']}}', field: '{{$item['column']}}', switch: true},
         @else
-        { label : '{{$item['title']}}', field: '{{ Str::lower($item['column'])}}'},
+        { label : '{{$item['title']}}', field: '{{$item['column']}}'},
         @endif
       @endforeach
     ]
