@@ -91,7 +91,7 @@ class GeneratorController extends Controller
         })->map(function ($value, $key) use($table) {
             return $this->isJson($value['relasi']) ? 
                 $value['column'].'|'.Str::title($table).Str::title($value['column']) : 
-                $value['column'].'|'.Str::title($value['relasi']);
+                $value['column'].'|'.Str::lower($value['relasi']);
         });
         // dd($relasional);
         // generate model static
