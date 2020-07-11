@@ -47,7 +47,7 @@ class {{ Str::title($table) }} {
   }
 
   getList() {
-    return this.service('get', API_URL + '/getlist');
+    return this.service('get', API_URL + '/list');
   }
 }
 
