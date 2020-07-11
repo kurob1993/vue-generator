@@ -8,6 +8,9 @@
                 autocomplete 
                 class="b-select" 
                 v-model="model.{{$vmodel}}"
+                @if ($pk)
+                :disabled='{{$vmodel}}ReadOnly'
+                @endif
             >
                 <option :key="index" :value="item.value" v-for="(item,index) in {{$vmodel}}Options" >
                     @{{item.text}}
