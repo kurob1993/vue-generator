@@ -47,7 +47,7 @@
                            <div class="card mb-2">
                               <div class="card-header" id="heading{{$key}}">
                                  <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne{{$key}}" aria-expanded="true" aria-controls="collapseOne">
-                                    {{ $item['column'] }}
+                                    {{ $item['title'] }}
                                  </button>
                                  <button type="button" class="btn btn-sm btn-danger" onclick="hapus('form-{{$key}}')">Hapus {{ $item['column'] }} 👇</button>
                               </div>
