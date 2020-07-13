@@ -49,7 +49,7 @@
 <script>
 import {{Str::title($table)}} from '@/models/{{Str::limit($table,2,'')}}/{{$table}}'
 @foreach ($relasional as $item)
-import {{ explode('|',$item)[1] }} from '@/models/{{Str::limit($table,2,'')}}/{{explode('|',$item)[1]}}'
+import {{ explode('|',$item)[1] }} from '@/models/{{Str::limit($item,2,'')}}/{{explode('|',$item)[1]}}'
 @endforeach
 import GoodTable from '@/components/GoodTable';
 
