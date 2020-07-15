@@ -3,7 +3,7 @@
       <label class="vs-input--label" for="{{$vmodel}}">{{$label}}</label>
    </vs-col>
    <vs-col vs-w="8" vs-xs="7">
-      <ValidationProvider tag="div" rules="{{$required}}{{isset($max) ? '|max:'.$max : ''}}{{isset($pk) ? '|alpha_num' : ''}}" name="{{$label}}" v-slot="{ errors }">
+      <ValidationProvider tag="div" rules="{{$required}}{{isset($max) ? '|max:'.$max : ''}}{{$pk ? '|alpha_num' : ''}}" name="{{$label}}" v-slot="{ errors }">
          <vs-input 
             type="text" 
             class="inputx" 
