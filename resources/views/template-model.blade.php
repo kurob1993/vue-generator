@@ -1,6 +1,6 @@
 @php($pk = [])
 @foreach ($columns as $key => $item) 
-@if($item['pk']) 
+@if($item['pk'] && $item['column'] !== 'companyid') 
 @php($pk[] = $item['column'])
 @endif 
 @endforeach
@@ -28,9 +28,7 @@ export default class {{ Str::title($table) }} {
 
   async put() {
     return await {{ Str::title($table) }}Service.put(
-      @foreach ($columns as $key => $item) @if($item['pk']) 
-      this.{{$item['column'] }},
-      @endif @endforeach
+      @foreach ($columns as $key => $item) @if($item['pk'] && $item['column'] !== 'companyid') this.{{$item['column'] }}, @endif @endforeach
       {
         @foreach ($columns as $item)
           {{$item['column']}}: this.{{$item['column']}},

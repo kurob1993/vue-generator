@@ -55,7 +55,7 @@ import GoodTable from '@/components/GoodTable';
 
 @php($pk = [])
 @foreach ($columns as $key => $item) 
-@if($item['pk']) 
+@if($item['pk'] && $item['column'] !== 'companyid') 
 @php($pk[] = $item['column'])
 @endif 
 @endforeach
@@ -156,7 +156,9 @@ export default {
       await this.setOption();
       @endif
       @foreach ($columns as $item)
-        @if($item['pk']) let {{$item['column']}} = selected[0].{{$item['column']}}; @endif
+        @if($item['pk'] && $item['column'] !== 'companyid') 
+          let {{$item['column']}} = selected[0].{{$item['column']}}; 
+        @endif
       @endforeach
       let {{ $table }} = new {{ Str::title($table) }}();
       let getById = await {{ $table }}.getById({{ implode(",",$pk) }});
@@ -227,7 +229,7 @@ export default {
         this.$vs.loading({ container: '#delete-with-loading', scale: 0.5 });
 
         @foreach ($columns as $item)
-        @if($item['pk'])
+        @if($item['pk'] && $item['column'] !== 'companyid')
             let {{$item['column']}} = row.{{$item['column']}};
           @endif
         @endforeach

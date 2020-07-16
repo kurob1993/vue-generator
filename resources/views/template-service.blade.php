@@ -1,6 +1,6 @@
 @php($pk = [])
 @foreach ($columns as $key => $item) 
-@if($item['pk']) 
+@if($item['pk'] && $item['column'] !== 'companyid') 
 @php($pk[] = $item['column'])
 @endif 
 @endforeach
@@ -35,15 +35,15 @@ class {{ Str::title($table) }} {
   }
 
   put({{ implode(",",$pk) }}, data) {
-    return this.service('put', API_URL @foreach ($columns as $key => $item) @if($item['pk']) + '/' + {{ $item['column'] }} @endif @endforeach, data);
+    return this.service('put', API_URL @foreach ($columns as $key => $item) @if($item['pk'] && $item['column'] !== 'companyid') + '/' + {{ $item['column'] }} @endif @endforeach, data);
   }
 
   delete({{ implode(",",$pk) }}) {
-    return this.service('delete', API_URL @foreach ($columns as $key => $item) @if($item['pk']) + '/' + {{ $item['column'] }} @endif @endforeach);
+    return this.service('delete', API_URL @foreach ($columns as $key => $item) @if($item['pk'] && $item['column'] !== 'companyid') + '/' + {{ $item['column'] }} @endif @endforeach);
   }
 
   getById({{ implode(",",$pk) }}) {
-    return this.service('get', API_URL @foreach ($columns as $key => $item) @if($item['pk']) + '/' + {{ $item['column'] }} @endif @endforeach);
+    return this.service('get', API_URL @foreach ($columns as $key => $item) @if($item['pk'] && $item['column'] !== 'companyid') + '/' + {{ $item['column'] }} @endif @endforeach);
   }
 
   getList() {
